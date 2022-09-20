@@ -8,13 +8,18 @@ let size;
 let black, blackStart;
 let whitePieces, blackPieces;
 let pawn, knight, bishop, rook, queen, king;
+let pieceOne
 
-function setup() {
-  size = Math.min(windowWidth, windowHeight)
-  createCanvas(size, size);
-  black = false;
-  blackStart = false;
-  
+class Pawn{
+  constructor(location) {
+    // this.team = team;
+    this.location = location;
+    this.shape = circle(location[0], location[1], size/8);
+  }
+  move(){
+    this.location = getMouseTile();
+    
+  }
 }
 function getMouseTile(){
   let tileX = round(map(mouseX, 0, width, 0, 8));
@@ -22,17 +27,24 @@ function getMouseTile(){
 
   return (tileX, tileY);
 }
-class Pawn{
-  constructor(team, location) {
-    this.team = team;
-    this.location = location;
-    this.shape = circle(location, size/8);
-  }
-  move(){
-    this.location = getMouseTile();
-    
-  }
+function tileToXY(tileWidth, tileHeight){
+  let tileX = round(map(tileWidth, 0, width, 0, 8));
+  let tileY = round(map(tileHeight, 0, height, 0, 8));
+
+  return (tileX, tileY);
 }
+function setup() {
+  size = Math.min(windowWidth, windowHeight)
+  createCanvas(size, size);
+  black = false;
+  blackStart = false;
+  pieceOne = new Pawn(tileToXY(1, 1));
+  
+}
+
+
+
+
 
 function windowResized(){
   setup();
@@ -70,7 +82,8 @@ function drawPieces(){
 function draw() {
 
   drawBoard();
-  
+  print(pieceOne.location);
+  pieceOne.shape();
   
 
 }
