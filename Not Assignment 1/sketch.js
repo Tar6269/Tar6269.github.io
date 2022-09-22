@@ -11,11 +11,14 @@ let pawn, knight, bishop, rook, queen, king;
 let pieceOne
 let whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight;
 let blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight;
+let turn;
+let selectedPiece;
 function getMouseTile(){
-  let tileX = round(map(mouseX, 0, width, 0, 8));
-  let tileY = round(map(mouseY, 0, height, 0, 8));
+  let tileX = floor(map(mouseX, 0, width, 0, 8))+ 1;
+  let tileY = floor(map(mouseY, 0, height, 0, 8)) + 1;
 
-  return (tileX, tileY);
+  
+  return [tileX, tileY];
 }
 function tileToXY(tileWidth, tileHeight){
   let tileX = map(tileWidth -0.5, 0, 8, 0, width);
@@ -25,15 +28,17 @@ function tileToXY(tileWidth, tileHeight){
 }
 function setup() {
   class Pawn{
-    constructor(location) {
-      // this.team = team;
+    constructor(location, team, colour) {
+      this.team = team;
       this.location = location;
-      // this.shape = circle(location[0], location[1], size/8);
+      this.colour = colour
     }
     move(){
       this.location = getMouseTile();
     }
     draw(){
+      fill(this.colour);
+
       circle(this.location[0], this.location[1], size/8.5);
     }
   }
@@ -41,17 +46,19 @@ function setup() {
   createCanvas(size, size);
   black = false;
   blackStart = false;
+  turn = "white"
+  pieceSelected = false
   whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight];
   blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight];
   print(tileToXY(1,1))
 
   for (let pawn = 0; pawn < whitePieces.length; pawn++) {
     const element = whitePieces[pawn];
-    whitePieces[pawn] = new Pawn(tileToXY(pawn+1, 2));
+    whitePieces[pawn] = new Pawn(tileToXY(pawn+1, 2),"white", 255);
   }
   for (let pawn = 0; pawn < blackPieces.length; pawn++) {
     const element = blackPieces[pawn];
-    blackPieces[pawn] = new Pawn(tileToXY(pawn+1, 7));
+    blackPieces[pawn] = new Pawn(tileToXY(pawn+1, 7), "black", 0);
   }
   
 }
@@ -109,8 +116,25 @@ function draw() {
   for (let piece = 0; piece < blackPieces.length; piece++) {
     const element = blackPieces[piece];
     blackPieces[piece].draw()
+    
   }
 
-  
-
+}
+function mouseClicked(){
+  if (pieceSelected === false){
+  let selectedTile = getMouseTile()
+  print(selectedTile);
+  if (turn === "white"){
+    for (let piece = 0; piece < whitePieces.length; piece++) {
+      const element = whitePieces[piece];
+      if (whitePieces[piece].location === tileToXY(selectedTile) && whitePieces.team === "white"){
+        selectedPiece = whitePieces[piece];
+        pieceSelected = true;
+        }
+      }
+    }
+  }
+  else{
+    pieceSelected.move()
+  }
 }
