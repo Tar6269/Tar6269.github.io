@@ -4,7 +4,7 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-let size;
+let WinSize;
 let black, blackStart;
 let whitePieces, blackPieces;
 let pawn, knight, bishop, rook, queen, king;
@@ -13,16 +13,23 @@ let whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, wh
 let blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight;
 let turn;
 let selectedPiece;
+let selectedTile;
+
 function getMouseTile(){
   let tileX = floor(map(mouseX, 0, width, 0, 8))+ 1;
   let tileY = floor(map(mouseY, 0, height, 0, 8)) + 1;
-
   
   return [tileX, tileY];
 }
 function tileToXY(tileWidth, tileHeight){
   let tileX = map(tileWidth -0.5, 0, 8, 0, width);
   let tileY = map(tileHeight -0.5, 0, 8, 0, height);
+
+  return [tileX, tileY];
+}
+function XYToTile(tileWidth, tileHeight){
+  let tileX = floor(map(tileWidth, 0, width, 0, 8))+ 1;
+  let tileY = floor(map(tileHeight, 0, height, 0, 8)) + 1;
 
   return [tileX, tileY];
 }
@@ -38,19 +45,24 @@ function setup() {
     }
     draw(){
       fill(this.colour);
-
-      circle(this.location[0], this.location[1], size/8.5);
+      if (this.team === "white"){
+        stroke(0)
+      }
+      else{
+        stroke(255)
+      }
+      strokeWeight(1.2)
+      circle(this.location[0], this.location[1], WinSize/8.5);
     }
   }
-  size = Math.min(windowWidth, windowHeight)
-  createCanvas(size, size);
+  WinSize = Math.min(windowWidth, windowHeight)
+  createCanvas(WinSize, WinSize);
   black = false;
   blackStart = false;
   turn = "white"
   pieceSelected = false
   whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight];
   blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight];
-  print(tileToXY(1,1))
 
   for (let pawn = 0; pawn < whitePieces.length; pawn++) {
     const element = whitePieces[pawn];
@@ -62,10 +74,6 @@ function setup() {
   }
   
 }
-
-
-
-
 
 function windowResized(){
   setup();
@@ -91,50 +99,48 @@ function drawBoard(){
         fill(255);
         black = true
       }
-       square(size/8*x, size/8*y, size/8);
+       square(WinSize/8*x, WinSize/8*y, WinSize/8);
     }
   }
 }
 
 function drawPieces(){
-
-}
-
-function draw() {
-
-  drawBoard();
-
-  fill(30)
-  stroke(255)
-  strokeWeight(1.5)
   for (let piece = 0; piece < whitePieces.length; piece++) {
     const element = whitePieces[piece];
     whitePieces[piece].draw()
   }
-  fill(255)
-  stroke(0)
+
   for (let piece = 0; piece < blackPieces.length; piece++) {
     const element = blackPieces[piece];
     blackPieces[piece].draw()
     
   }
+}
+
+function draw() {
+
+  drawBoard();
+  drawPieces();
 
 }
 function mouseClicked(){
   if (pieceSelected === false){
-  let selectedTile = getMouseTile()
-  print(selectedTile);
+  selectedTile = getMouseTile()
+  
   if (turn === "white"){
     for (let piece = 0; piece < whitePieces.length; piece++) {
       const element = whitePieces[piece];
-      if (whitePieces[piece].location === tileToXY(selectedTile) && whitePieces.team === "white"){
+      print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
+      if ( XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]) == selectedTile){
         selectedPiece = whitePieces[piece];
         pieceSelected = true;
+        print("piece selected!");
         }
       }
     }
   }
   else{
-    pieceSelected.move()
+    selectedPiece.move();
   }
+  print(selectedTile);
 }
