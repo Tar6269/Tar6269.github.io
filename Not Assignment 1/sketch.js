@@ -4,6 +4,7 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+//initialize variables
 let WinSize;
 let black, blackStart;
 let whitePieces, blackPieces;
@@ -39,9 +40,33 @@ function setup() {
       this.team = team;
       this.location = location;
       this.colour = colour
+      this.hasMoved = false
     }
     move(){
-      this.location = getMouseTile();
+
+      if (turn === "white"){
+        if (this.hasMoved === false && XYToTile(mouseX, mouseY)[1] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[1] + 2 && XYToTile(mouseX, mouseY)[0] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[0]){
+          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          }
+        else if (XYToTile(mouseX, mouseY)[1] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[1] + 1 && XYToTile(mouseX, mouseY)[0] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[0]){
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        
+        }
+        turn = "black";
+      }
+
+      else{
+        if (this.hasMoved === false && XYToTile(mouseX, mouseY)[1] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[1] -2 && XYToTile(mouseX, mouseY)[0] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[0]){
+          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          }
+        else if (XYToTile(mouseX, mouseY)[1] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[1] - 1 && XYToTile(mouseX, mouseY)[0] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[0]){
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        turn = "white";
+      }
+    }
+      print(this.location);
+      this.hasMoved = true;
+      
     }
     draw(){
       fill(this.colour);
@@ -123,24 +148,54 @@ function draw() {
   drawPieces();
 
 }
-function mouseClicked(){
-  if (pieceSelected === false){
-  selectedTile = getMouseTile()
-  
-  if (turn === "white"){
-    for (let piece = 0; piece < whitePieces.length; piece++) {
-      const element = whitePieces[piece];
-      print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
-      if ( XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]) == selectedTile){
-        selectedPiece = whitePieces[piece];
+
+function scanForSelectedPiece(team){
+  for (let piece = 0; piece < team.length; piece++) {
+    const element = team[piece];
+    // print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
+    if ((XYToTile(team[piece].location[0], team[piece].location[1]))[0] === selectedTile[0] && (XYToTile(team[piece].location[0], team[piece].location[1]))[1] === selectedTile[1]){
+      selectedPiece = team[piece];
+      selectedPiece.colour = 100;
+      pieceSelected = true;
+      print("piece selected!");
+      }
+    }
+  }
+  function scanForBlackPiece(){
+    for (let piece = 0; piece < blackPieces.length; piece++) {
+      const element = blackPieces[piece];
+      // print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
+      if ((XYToTile(blackPieces[piece].location[0], blackPieces[piece].location[1]))[0] === selectedTile[0] && (XYToTile(blackPieces[piece].location[0], blackPieces[piece].location[1]))[1] === selectedTile[1]){
+        selectedPiece = blackPieces[piece];
+        selectedPiece.colour = 100;
         pieceSelected = true;
         print("piece selected!");
         }
       }
     }
+function mouseClicked(){
+  if (pieceSelected === false){
+  selectedTile = getMouseTile();
+  
+    if (turn === "white"){
+      scanForSelectedPiece(whitePieces);
+      }
+
+    else if (turn === "black"){
+      scanForSelectedPiece(blackPieces);
+    }
   }
   else{
+ 
     selectedPiece.move();
+    
+    pieceSelected = false;
+    if (selectedPiece.team === "white"){
+      selectedPiece.colour = 255;
+    }
+    else {
+      selectedPiece.colour = 0;
+    }
   }
   print(selectedTile);
 }
