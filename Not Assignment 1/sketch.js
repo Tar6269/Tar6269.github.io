@@ -49,7 +49,6 @@ function setup() {
 
     move(){
 
-
       if (turn === "white"){
         // print(this.currentTile());
         // print(trueIfPiece(blackPieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] + 1]));
@@ -63,12 +62,13 @@ function setup() {
           turn = "black";
           this.hasMoved = true;
         }
-        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] + 2 && getMouseTile()[0] === this.currentTile()[0]){
+        
+        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] + 2 && getMouseTile()[0] === this.currentTile()[0] && !truePieceOffsetArray(whitePieces, [[0, 1], [0, 2]], this.currentTile()) && !truePieceOffsetArray(blackPieces, [[0, 1], [0, 2]], this.currentTile())){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           turn = "black";
           this.hasMoved = true;
           }
-        else if ((getMouseTile()[1] === this.currentTile()[1] + 1 && getMouseTile()[0] === this.currentTile()[0])){
+        else if ((getMouseTile()[1] === this.currentTile()[1] + 1 && getMouseTile()[0] === this.currentTile()[0]) && !(trueIfPieceOffset(whitePieces, 0, 1, this.currentTile()) || trueIfPieceOffset(blackPieces, 0, 1, this.currentTile()))){
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "black";
         this.hasMoved = true;
@@ -78,7 +78,7 @@ function setup() {
 
       else{
 
-        if (trueIfPiece(whitePieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(blackPieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
+        if (trueIfPiece(whitePieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(whitePieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           scanForPiece(whitePieces, this.currentTile())
           selectedPiece.location = [-100, -100];
@@ -86,12 +86,12 @@ function setup() {
           this.hasMoved = true;
         }
 
-        if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] -2 && getMouseTile()[0] === this.currentTile()[0]){
+        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] -2 && getMouseTile()[0] === this.currentTile()[0] && !truePieceOffsetArray(whitePieces, [[0, -1], [0, -2]], this.currentTile()) && !truePieceOffsetArray(blackPieces, [[0, -1], [0, -2]], this.currentTile())){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           turn = "white";
           this.hasMoved = true;
           }
-        else if (getMouseTile()[1] === this.currentTile()[1] - 1 && getMouseTile()[0] === this.currentTile()[0]){
+        else if (getMouseTile()[1] === this.currentTile()[1] - 1 && getMouseTile()[0] === this.currentTile()[0]&& !(trueIfPieceOffset(whitePieces, 0, -1, this.currentTile()) || trueIfPieceOffset(blackPieces, 0, -1, this.currentTile()))){
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "white";
         this.hasMoved = true;
@@ -194,19 +194,33 @@ function scanForPiece(team, selectedTile){
       }
     }
   }
-  function trueIfPiece(team, selectedTile){
+
+function trueIfPiece(team, selectedTile){
   for (let piece = 0; piece < team.length; piece++) {
     const element = team[piece];
-    // print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
     if (team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]){
-      print(team[piece].currentTile()[0] === selectedTile[0]);
-      print(team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]);
+      // print(team[piece].currentTile()[0] === selectedTile[0]);
+      // print(team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]);
       return true;
       }
-      
-    }
-    return false;
+    
   }
+  return false;
+}
+
+function trueIfPieceOffset(team, offsetX, offsetY, thisTile){
+  return (trueIfPiece(team, [thisTile[0] + offsetX, thisTile[1] + offsetY]));
+}
+function truePieceOffsetArray(team, offsetsXY, thisTile){
+  let pointsArray = offsetsXY;
+  for (let i = 0; i < pointsArray.length; i++) {
+    const element = pointsArray[i];
+    if (trueIfPieceOffset(team, pointsArray[i][0], pointsArray[i][1], thisTile)){
+      return true;
+    }
+  }
+  return false;
+}
 function mouseClicked(){
   if (pieceSelected === false){
 
