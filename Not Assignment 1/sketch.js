@@ -14,7 +14,6 @@ let whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, wh
 let blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight;
 let turn;
 let selectedPiece;
-let selectedTile;
 
 function getMouseTile(){
   let tileX = floor(map(mouseX, 0, width, 0, 8))+ 1;
@@ -39,34 +38,68 @@ function setup() {
     constructor(location, team, colour) {
       this.team = team;
       this.location = location;
-      this.colour = colour
-      this.hasMoved = false
+      
+      this.colour = colour;
+      this.hasMoved = false;
     }
+
+    currentTile(){
+      return XYToTile(this.location[0], this.location[1]);
+    }  
+
     move(){
 
+
       if (turn === "white"){
-        if (this.hasMoved === false && XYToTile(mouseX, mouseY)[1] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[1] + 2 && XYToTile(mouseX, mouseY)[0] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[0]){
+        // print(this.currentTile());
+        // print(trueIfPiece(blackPieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] + 1]));
+        // print(getMouseTile());
+        // print([this.currentTile()[0]+ 1 , this.currentTile()[1] + 1])
+        // print(getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] + 1)
+        if (trueIfPiece(blackPieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] + 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] + 1 || trueIfPiece(blackPieces, [this.currentTile()[0]- 1 , this.currentTile()[1] + 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] + 1){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
-          }
-        else if (XYToTile(mouseX, mouseY)[1] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[1] + 1 && XYToTile(mouseX, mouseY)[0] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[0]){
-        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
-        
+          scanForPiece(blackPieces, this.currentTile())
+          selectedPiece.location = [-100, -100];
+          turn = "black";
+          this.hasMoved = true;
         }
+        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] + 2 && getMouseTile()[0] === this.currentTile()[0]){
+          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          turn = "black";
+          this.hasMoved = true;
+          }
+        else if ((getMouseTile()[1] === this.currentTile()[1] + 1 && getMouseTile()[0] === this.currentTile()[0])){
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "black";
+        this.hasMoved = true;
+        }
+        
       }
 
       else{
-        if (this.hasMoved === false && XYToTile(mouseX, mouseY)[1] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[1] -2 && XYToTile(mouseX, mouseY)[0] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[0]){
+
+        if (trueIfPiece(whitePieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(blackPieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          scanForPiece(whitePieces, this.currentTile())
+          selectedPiece.location = [-100, -100];
+          turn = "white";
+          this.hasMoved = true;
+        }
+
+        if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] -2 && getMouseTile()[0] === this.currentTile()[0]){
+          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          turn = "white";
+          this.hasMoved = true;
           }
-        else if (XYToTile(mouseX, mouseY)[1] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[1] - 1 && XYToTile(mouseX, mouseY)[0] === XYToTile(selectedPiece.location[0], selectedPiece.location[1])[0]){
+        else if (getMouseTile()[1] === this.currentTile()[1] - 1 && getMouseTile()[0] === this.currentTile()[0]){
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "white";
+        this.hasMoved = true;
       }
-    }
-      print(this.location);
-      this.hasMoved = true;
       
+    }
+      
+
     }
     draw(){
       fill(this.colour);
@@ -149,11 +182,11 @@ function draw() {
 
 }
 
-function scanForSelectedPiece(team){
+function scanForPiece(team, selectedTile){
   for (let piece = 0; piece < team.length; piece++) {
     const element = team[piece];
     // print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
-    if ((XYToTile(team[piece].location[0], team[piece].location[1]))[0] === selectedTile[0] && (XYToTile(team[piece].location[0], team[piece].location[1]))[1] === selectedTile[1]){
+    if (team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]){
       selectedPiece = team[piece];
       selectedPiece.colour = 100;
       pieceSelected = true;
@@ -161,41 +194,45 @@ function scanForSelectedPiece(team){
       }
     }
   }
-  function scanForBlackPiece(){
-    for (let piece = 0; piece < blackPieces.length; piece++) {
-      const element = blackPieces[piece];
-      // print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
-      if ((XYToTile(blackPieces[piece].location[0], blackPieces[piece].location[1]))[0] === selectedTile[0] && (XYToTile(blackPieces[piece].location[0], blackPieces[piece].location[1]))[1] === selectedTile[1]){
-        selectedPiece = blackPieces[piece];
-        selectedPiece.colour = 100;
-        pieceSelected = true;
-        print("piece selected!");
-        }
+  function trueIfPiece(team, selectedTile){
+  for (let piece = 0; piece < team.length; piece++) {
+    const element = team[piece];
+    // print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
+    if (team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]){
+      print(team[piece].currentTile()[0] === selectedTile[0]);
+      print(team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]);
+      return true;
       }
+      
     }
+    return false;
+  }
 function mouseClicked(){
   if (pieceSelected === false){
-  selectedTile = getMouseTile();
+
   
     if (turn === "white"){
-      scanForSelectedPiece(whitePieces);
+      scanForPiece(whitePieces,getMouseTile());
       }
 
     else if (turn === "black"){
-      scanForSelectedPiece(blackPieces);
+      scanForPiece(blackPieces, getMouseTile());
     }
   }
   else{
  
-    selectedPiece.move();
+    
     
     pieceSelected = false;
+
     if (selectedPiece.team === "white"){
       selectedPiece.colour = 255;
     }
     else {
       selectedPiece.colour = 0;
     }
+
+    selectedPiece.move();
   }
-  print(selectedTile);
+
 }
