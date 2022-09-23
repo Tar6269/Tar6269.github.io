@@ -57,7 +57,7 @@ function setup() {
         // print(getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] + 1)
         if (trueIfPiece(blackPieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] + 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] + 1 || trueIfPiece(blackPieces, [this.currentTile()[0]- 1 , this.currentTile()[1] + 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] + 1){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
-          scanForPiece(blackPieces, this.currentTile())
+          scanForPiece(blackPieces, this.currentTile());
           selectedPiece.location = [-100, -100];
           turn = "black";
           this.hasMoved = true;
@@ -73,14 +73,14 @@ function setup() {
         turn = "black";
         this.hasMoved = true;
         }
-        
+    
       }
 
       else{
 
         if (trueIfPiece(whitePieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(whitePieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
-          scanForPiece(whitePieces, this.currentTile())
+          scanForPiece(whitePieces, this.currentTile());
           selectedPiece.location = [-100, -100];
           turn = "white";
           this.hasMoved = true;
@@ -104,21 +104,69 @@ function setup() {
     draw(){
       fill(this.colour);
       if (this.team === "white"){
-        stroke(0)
+        stroke(0);
       }
       else{
-        stroke(255)
+        stroke(255);
       }
-      strokeWeight(1.2)
+      strokeWeight(1.2);
       circle(this.location[0], this.location[1], WinSize/8.5);
     }
   }
-  WinSize = Math.min(windowWidth, windowHeight)
+  class knight{
+    constructor(location, team, colour) {
+      this.team = team;
+      this.location = location;
+      
+      this.colour = colour;
+    }
+    currentTile(){
+      return XYToTile(this.location[0], this.location[1]);
+    }  
+    move(){
+      if (turn === "white"){
+
+        if ( trueIfAnyEqual(getMouseTile(), [[2, 1][1,2][-2, 1][1,-2][-1, -2][-1, 2][-2, -1][2, -1]]&& !truePieceOffsetArray(whitePieces, [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]]))){
+          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          scanForPiece(blackPieces, this.currentTile());
+          selectedPiece.location = [-100, -100];
+          turn = "black";
+        }
+
+        }
+    
+      
+
+      else{
+
+        if (trueIfPiece(whitePieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(whitePieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
+          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          scanForPiece(whitePieces, this.currentTile());
+          selectedPiece.location = [-100, -100];
+          turn = "white";
+        }
+
+        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] -2 && getMouseTile()[0] === this.currentTile()[0] && !truePieceOffsetArray(whitePieces, [[0, -1], [0, -2]], this.currentTile()) && !truePieceOffsetArray(blackPieces, [[0, -1], [0, -2]], this.currentTile())){
+          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          turn = "white";
+          }
+        else if (getMouseTile()[1] === this.currentTile()[1] - 1 && getMouseTile()[0] === this.currentTile()[0]&& !(trueIfPieceOffset(whitePieces, 0, -1, this.currentTile()) || trueIfPieceOffset(blackPieces, 0, -1, this.currentTile()))){
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        turn = "white";
+      }
+      
+    }
+  
+      
+
+    }
+}
+  WinSize = Math.min(windowWidth, windowHeight);
   createCanvas(WinSize, WinSize);
   black = false;
   blackStart = false;
   turn = "white"
-  pieceSelected = false
+  pieceSelected = false;
   whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight];
   blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight];
 
@@ -155,7 +203,7 @@ function drawBoard(){
       }
       else if (black ===false){
         fill(255);
-        black = true
+        black = true;
       }
        square(WinSize/8*x, WinSize/8*y, WinSize/8);
     }
@@ -165,12 +213,12 @@ function drawBoard(){
 function drawPieces(){
   for (let piece = 0; piece < whitePieces.length; piece++) {
     const element = whitePieces[piece];
-    whitePieces[piece].draw()
+    whitePieces[piece].draw();
   }
 
   for (let piece = 0; piece < blackPieces.length; piece++) {
     const element = blackPieces[piece];
-    blackPieces[piece].draw()
+    blackPieces[piece].draw();
     
   }
 }
@@ -218,6 +266,17 @@ function truePieceOffsetArray(team, offsetsXY, thisTile){
     if (trueIfPieceOffset(team, pointsArray[i][0], pointsArray[i][1], thisTile)){
       return true;
     }
+  }
+  return false;
+}
+
+function trueIfAnyEqual(comparedValue, array){
+  for (let i = 0; i < array.length; i++) {
+    const element = array[i];
+    if (comparedValue === array[i]){
+      return true;
+    }
+    
   }
   return false;
 }
