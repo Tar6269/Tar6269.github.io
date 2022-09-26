@@ -296,7 +296,7 @@ function mouseClicked(){
  
     
     
-    pieceSelected = false;
+    
 
     if (selectedPiece.team === "white"){
       selectedPiece.colour = 255;
@@ -306,6 +306,8 @@ function mouseClicked(){
     }
 
     selectedPiece.move();
+    
+    pieceSelected = false;
   }
 
 }
