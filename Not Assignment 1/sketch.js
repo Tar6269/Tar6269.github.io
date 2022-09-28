@@ -14,6 +14,14 @@ let whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, wh
 let blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight;
 let turn;
 let selectedPiece;
+let font;
+
+function preload() {
+  font = loadFont('inconsolata.ttf');
+}
+
+let points;
+let bounds;
 
 function getMouseTile(){
   let tileX = floor(map(mouseX, 0, width, 0, 8))+ 1;
@@ -34,6 +42,13 @@ function XYToTile(tileWidth, tileHeight){
   return [tileX, tileY];
 }
 function setup() {
+
+  points = font.textToPoints('\u2658', 0, 0, 10, {
+    sampleFactor: 5,
+    simplifyThreshold: 0
+  });
+  bounds = font.textBounds('\u2658 ', 0, 0, 10);
+
   class Pawn{
     constructor(location, team, colour) {
       this.team = team;
@@ -224,10 +239,24 @@ function drawPieces(){
 }
 
 function draw() {
-
+  beginShape();
+  translate(-bounds.x * WinSize/8 / bounds.w, -bounds.y * WinSize/8 / bounds.h);
+  for (let i = 0; i < points.length; i++) {
+    let p = points[i];
+    vertex(
+      p.x * WinSize/8 / bounds.w +
+        1,
+      p.y * WinSize/8 / bounds.h
+    );
+  }
+  endShape(CLOSE);
   drawBoard();
   drawPieces();
-
+  textAlign(CENTER, CENTER)
+  textSize(WinSize/7)
+  text("\u2658", tileToXY(2,1)[0], tileToXY(2,1)[1])
+  textSize(WinSize/6)
+  text("\u2658", tileToXY(2,1)[0], tileToXY(2,1)[1])
 }
 
 function scanForPiece(team, selectedTile){
