@@ -17,7 +17,7 @@ let selectedPiece;
 let font;
 
 function preload() {
-  font = loadFont('inconsolata.ttf');
+  font = loadFont('Inconsolata.ttf');
 }
 
 let points;
