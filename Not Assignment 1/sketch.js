@@ -11,7 +11,9 @@ let whitePieces, blackPieces;
 let pawn, knight, bishop, rook, queen, king;
 let pieceOne
 let whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight;
+let whiteKnightOne, whiteKnightTwo;
 let blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight;
+let blackKnightOne, blackKnightTwo;
 let turn;
 let selectedPiece;
 let font;
@@ -129,11 +131,11 @@ function setup() {
     }
   }
   class knight{
-    constructor(location, team, colour) {
+    constructor(location, team) {
       this.team = team;
       this.location = location;
       
-      this.colour = colour;
+      // this.colour = colour;
     }
     currentTile(){
       return XYToTile(this.location[0], this.location[1]);
@@ -171,9 +173,30 @@ function setup() {
       }
       
     }
-  
-      
 
+    }
+    draw(){
+      let knightFill;
+      let knightBorder;
+      if (this.team === "black"){
+      knightFill = "0";
+      knightBorder = "255"
+      }
+      else if (this.team === "white"){
+      knightFill = "255";
+      knightBorder = "0";
+      }
+      strokeWeight(WinSize/90);
+      textSize(WinSize/7);
+      fill(knightFill);
+      text("\u2658", this.location[0], this.location[1] + WinSize/75);
+      textSize(WinSize/14);
+      strokeWeight(WinSize/40)
+      text("\u2658", this.location[0], this.location[1] + WinSize/75);
+      strokeWeight(1);  
+      fill(knightBorder);
+      textSize(WinSize/6.5);
+      text("\u2658", this.location[0], this.location[1] + WinSize/75);
     }
 }
   WinSize = Math.min(windowWidth, windowHeight);
@@ -182,17 +205,22 @@ function setup() {
   blackStart = false;
   turn = "white"
   pieceSelected = false;
-  whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight];
-  blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight];
+  whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight, whiteKnightOne, whiteKnightTwo];
+  blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight, blackKnightOne, blackKnightTwo];
 
-  for (let pawn = 0; pawn < whitePieces.length; pawn++) {
+  for (let pawn = 0; pawn < 9; pawn++) {
     const element = whitePieces[pawn];
     whitePieces[pawn] = new Pawn(tileToXY(pawn+1, 2),"white", 255);
   }
-  for (let pawn = 0; pawn < blackPieces.length; pawn++) {
+  whiteKnightOne = new knight(tileToXY(2, 1), "white");
+  whiteKnightTwo = new knight(tileToXY(7, 1), "white");
+  for (let pawn = 0; pawn < 9; pawn++) {
     const element = blackPieces[pawn];
     blackPieces[pawn] = new Pawn(tileToXY(pawn+1, 7), "black", 0);
   }
+  blackKnightOne = new knight(tileToXY(2, 8), "black");
+  blackKnightTwo = new knight(tileToXY(7, 8), "black");
+
   
 }
 
@@ -239,24 +267,17 @@ function drawPieces(){
 }
 
 function draw() {
-  beginShape();
-  translate(-bounds.x * WinSize/8 / bounds.w, -bounds.y * WinSize/8 / bounds.h);
-  for (let i = 0; i < points.length; i++) {
-    let p = points[i];
-    vertex(
-      p.x * WinSize/8 / bounds.w +
-        1,
-      p.y * WinSize/8 / bounds.h
-    );
-  }
-  endShape(CLOSE);
+  print(WinSize)
   drawBoard();
   drawPieces();
-  textAlign(CENTER, CENTER)
-  textSize(WinSize/7)
-  text("\u2658", tileToXY(2,1)[0], tileToXY(2,1)[1])
-  textSize(WinSize/6)
-  text("\u2658", tileToXY(2,1)[0], tileToXY(2,1)[1])
+  textAlign(CENTER, CENTER);
+
+
+
+  // strokeWeight(1);
+  // textSize(WinSize/6);
+  // text("\u2658", tileToXY(2,1)[0], tileToXY(2,1)[1]);
+
 }
 
 function scanForPiece(team, selectedTile){
