@@ -143,7 +143,7 @@ function setup() {
     move(){
       if (turn === "white"){
 
-        if ( trueIfAnyEqual(getMouseTile(), [[2, 1][1,2][-2, 1][1,-2][-1, -2][-1, 2][-2, -1][2, -1]]&& !truePieceOffsetArray(whitePieces, [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]]))){
+        if (trueIfAnyEqual(getMouseTile(), [[2, 1][1,2][-2, 1][1,-2][-1, -2][-1, 2][-2, -1][2, -1]]&& !truePieceOffsetArray(whitePieces, [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]]))){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           scanForPiece(blackPieces, this.currentTile());
           selectedPiece.location = [-100, -100];
@@ -178,17 +178,31 @@ function setup() {
     draw(){
       let knightFill;
       let knightBorder;
-      if (this.team === "black"){
-      knightFill = "0";
-      knightBorder = "255"
-      }
-      else if (this.team === "white"){
-      knightFill = "255";
-      knightBorder = "0";
-      }
       strokeWeight(WinSize/90);
       textSize(WinSize/7);
-      fill(knightFill);
+
+      if (this.team === "black"){
+      knightFill = 0;
+      knightBorder = 255;
+      
+      // strokeWeight(WinSize/90);
+      // textSize(WinSize/7);
+      fill(0);
+      text("\u2658", this.location[0], this.location[1] + WinSize/75);
+      // textSize(WinSize/14);
+      // strokeWeight(WinSize/40)
+      // text("\u2658", this.location[0], this.location[1] + WinSize/75);
+
+      strokeWeight();  
+      // fill(255);
+      // textSize(WinSize/6.5);
+      // text("\u2658", this.location[0], this.location[1] + WinSize/75);
+      strokeWeight(1);
+      }
+      else if (this.team === "white"){
+      knightFill = 255;
+      knightBorder = 0;
+      
       text("\u2658", this.location[0], this.location[1] + WinSize/75);
       textSize(WinSize/14);
       strokeWeight(WinSize/40)
@@ -197,6 +211,10 @@ function setup() {
       fill(knightBorder);
       textSize(WinSize/6.5);
       text("\u2658", this.location[0], this.location[1] + WinSize/75);
+      }
+
+      // fill(knightFill);
+
     }
 }
   WinSize = Math.min(windowWidth, windowHeight);
@@ -212,14 +230,14 @@ function setup() {
     const element = whitePieces[pawn];
     whitePieces[pawn] = new Pawn(tileToXY(pawn+1, 2),"white", 255);
   }
-  whiteKnightOne = new knight(tileToXY(2, 1), "white");
-  whiteKnightTwo = new knight(tileToXY(7, 1), "white");
+  whitePieces[9] = new knight(tileToXY(2, 1), "white");
+  whitePieces[10] = new knight(tileToXY(7, 1), "white");
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = blackPieces[pawn];
     blackPieces[pawn] = new Pawn(tileToXY(pawn+1, 7), "black", 0);
   }
-  blackKnightOne = new knight(tileToXY(2, 8), "black");
-  blackKnightTwo = new knight(tileToXY(7, 8), "black");
+  blackPieces[9] = new knight(tileToXY(2, 8), "black");
+  blackPieces[10] = new knight(tileToXY(7, 8), "black");
 
   
 }
@@ -267,7 +285,6 @@ function drawPieces(){
 }
 
 function draw() {
-  print(WinSize)
   drawBoard();
   drawPieces();
   textAlign(CENTER, CENTER);
