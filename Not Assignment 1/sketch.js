@@ -142,11 +142,15 @@ function setup() {
     }  
     move(){
       if (turn === "white"){
+        print(getMouseTile());
+        print(trueIfAnyEqual(getMouseTile(), [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]]));
 
-        if (trueIfAnyEqual(getMouseTile(), [[2, 1][1,2][-2, 1][1,-2][-1, -2][-1, 2][-2, -1][2, -1]]&& !truePieceOffsetArray(whitePieces, [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]]))){
+        if (ifOffsetArray(getMouseTile(), [2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]) && !trueIfPiece(whitePieces,  getMouseTile())){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           scanForPiece(blackPieces, this.currentTile());
+          if (selectedPiece.team === "black"){
           selectedPiece.location = [-100, -100];
+          }
           turn = "black";
         }
 
@@ -156,21 +160,7 @@ function setup() {
 
       else{
 
-        if (trueIfPiece(whitePieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(whitePieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
-          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
-          scanForPiece(whitePieces, this.currentTile());
-          selectedPiece.location = [-100, -100];
-          turn = "white";
-        }
-
-        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] -2 && getMouseTile()[0] === this.currentTile()[0] && !truePieceOffsetArray(whitePieces, [[0, -1], [0, -2]], this.currentTile()) && !truePieceOffsetArray(blackPieces, [[0, -1], [0, -2]], this.currentTile())){
-          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
-          turn = "white";
-          }
-        else if (getMouseTile()[1] === this.currentTile()[1] - 1 && getMouseTile()[0] === this.currentTile()[0]&& !(trueIfPieceOffset(whitePieces, 0, -1, this.currentTile()) || trueIfPieceOffset(blackPieces, 0, -1, this.currentTile()))){
-        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
-        turn = "white";
-      }
+     
       
     }
 
@@ -184,33 +174,36 @@ function setup() {
       if (this.team === "black"){
       knightFill = 0;
       knightBorder = 255;
-      
-      // strokeWeight(WinSize/90);
-      // textSize(WinSize/7);
+      stroke(0);
+      strokeWeight(WinSize/90);
+      textSize(WinSize/7);
       fill(0);
-      text("\u2658", this.location[0], this.location[1] + WinSize/75);
-      // textSize(WinSize/14);
-      // strokeWeight(WinSize/40)
-      // text("\u2658", this.location[0], this.location[1] + WinSize/75);
+      text("\u2658", this.location[0], this.location[1] + WinSize/70);
+      textSize(WinSize/14);
+      strokeWeight(WinSize/40)
+      text("\u2658", this.location[0], this.location[1] + WinSize/70);
 
-      strokeWeight();  
-      // fill(255);
-      // textSize(WinSize/6.5);
-      // text("\u2658", this.location[0], this.location[1] + WinSize/75);
-      strokeWeight(1);
+      strokeWeight(1);  
+      fill(255);
+      textSize(WinSize/6.5);
+      text("\u2658", this.location[0], this.location[1] + WinSize/70);
+      // strokeWeight(1);
+      stroke(255);
       }
       else if (this.team === "white"){
       knightFill = 255;
       knightBorder = 0;
-      
-      text("\u2658", this.location[0], this.location[1] + WinSize/75);
+    
+      fill(knightFill);
+      stroke(knightFill);
+      text("\u2658", this.location[0], this.location[1] + WinSize/70);
       textSize(WinSize/14);
       strokeWeight(WinSize/40)
-      text("\u2658", this.location[0], this.location[1] + WinSize/75);
+      text("\u2658", this.location[0], this.location[1] + WinSize/70);
       strokeWeight(1);  
       fill(knightBorder);
       textSize(WinSize/6.5);
-      text("\u2658", this.location[0], this.location[1] + WinSize/75);
+      text("\u2658", this.location[0], this.location[1] + WinSize/70);
       }
 
       // fill(knightFill);
@@ -340,13 +333,25 @@ function truePieceOffsetArray(team, offsetsXY, thisTile){
 function trueIfAnyEqual(comparedValue, array){
   for (let i = 0; i < array.length; i++) {
     const element = array[i];
-    if (comparedValue === array[i]){
+    if (comparedValue[0] === array[i][0] && comparedValue[1] === array[i][1]){
       return true;
     }
     
   }
   return false;
 }
+function ifOffsetArray(comparedValue, Offsets){
+  for (let i = 0; i < Offsets.length; i++) {
+    const element = Offsets[i];
+    if (Offsets[i][0] === comparedValue && Offsets[i][1] === comparedValue){
+      return true;
+    }
+    return false;
+  }
+
+}
+
+
 function mouseClicked(){
   if (pieceSelected === false){
 
