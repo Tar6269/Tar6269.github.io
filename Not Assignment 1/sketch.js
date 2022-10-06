@@ -122,7 +122,7 @@ function setup() {
       let icon;
       fill(this.colour);
       if (this.team === "white"){
-        stroke(0);
+        stroke(100);
         icon = "\u2659";
       }
       else if(this.team === "black"){
@@ -130,7 +130,7 @@ function setup() {
         icon = "\u265F";
       }
       strokeWeight(3);
-      text(icon, this.location[0], this.location[1] + windowHeight/65);
+      text(icon, this.location[0], this.location[1] + windowHeight/60);
       // circle(this.location[0], this.location[1], WinSize/8.5);
     }
   }
