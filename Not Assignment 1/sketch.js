@@ -353,9 +353,9 @@ function ifOffsetArray(comparedValue, Offsets){
 
 
 function mouseClicked(){
+  
   if (pieceSelected === false){
 
-  
     if (turn === "white"){
       scanForPiece(whitePieces,getMouseTile());
       }
@@ -364,11 +364,8 @@ function mouseClicked(){
       scanForPiece(blackPieces, getMouseTile());
     }
   }
+
   else{
- 
-    
-    
-    
 
     if (selectedPiece.team === "white"){
       selectedPiece.colour = 255;
