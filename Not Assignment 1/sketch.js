@@ -142,10 +142,8 @@ function setup() {
     }  
     move(){
       if (turn === "white"){
-        print(getMouseTile());
-        print(trueIfAnyEqual(getMouseTile(), [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]]));
 
-        if (ifOffsetArray(getMouseTile(), [2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]) && !trueIfPiece(whitePieces,  getMouseTile())){
+        if (ifOffsetArray(getMouseTile(), [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]], this.currentTile()) && !trueIfPiece(whitePieces,  getMouseTile())){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           scanForPiece(blackPieces, this.currentTile());
           if (selectedPiece.team === "black"){
@@ -155,16 +153,18 @@ function setup() {
         }
 
         }
-    
-      
+      else if (turn === "black"){
 
-      else{
-
-     
-      
+        if (ifOffsetArray(getMouseTile(), [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]], this.currentTile()) && !trueIfPiece(blackPieces,  getMouseTile())){
+          this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+          scanForPiece(whitePieces, this.currentTile());
+          if (selectedPiece.team === "white"){
+          selectedPiece.location = [-100, -100];
+          }
+          turn = "white";
+        }
     }
-
-    }
+  }
     draw(){
       let knightFill;
       let knightBorder;
@@ -340,15 +340,25 @@ function trueIfAnyEqual(comparedValue, array){
   }
   return false;
 }
-function ifOffsetArray(comparedValue, Offsets){
-  for (let i = 0; i < Offsets.length; i++) {
-    const element = Offsets[i];
-    if (Offsets[i][0] === comparedValue && Offsets[i][1] === comparedValue){
+function ifOffsetArray(comparedValue, offsets, tileOfOffsets){
+  for (let i = 0; i < offsets.length; i++) {
+    const element = offsets[i];
+    offsets[i][0] = tileOfOffsets[0] + offsets[i][0];
+    offsets[i][1] = tileOfOffsets[1] + offsets[i][1];
+
+    print(offsets[i][0]);
+
+    print(comparedValue[0]);
+
+    print(offsets[i][1]);
+
+    print(comparedValue[1]);
+    if (offsets[i][0] === comparedValue[0] && offsets[i][1] === comparedValue[1]){
       return true;
     }
-    return false;
+    
   }
-
+return false;
 }
 
 
