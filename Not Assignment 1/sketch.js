@@ -16,14 +16,12 @@ let blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, bl
 let blackKnightOne, blackKnightTwo;
 let turn;
 let selectedPiece;
-let font;
-
+let firstTime = true;
 function preload() {
-  font = loadFont('Inconsolata.ttf');
+
 }
 
-let points;
-let bounds;
+
 
 function getMouseTile(){
   let tileX = floor(map(mouseX, 0, width, 0, 8))+ 1;
@@ -44,13 +42,7 @@ function XYToTile(tileWidth, tileHeight){
   return [tileX, tileY];
 }
 function setup() {
-
-  points = font.textToPoints('\u2658', 0, 0, 10, {
-    sampleFactor: 5,
-    simplifyThreshold: 0
-  });
-  bounds = font.textBounds('\u2658 ', 0, 0, 10);
-
+  if (firstTime === true){
   class Pawn{
     constructor(location, team, colour) {
       this.team = team;
@@ -112,6 +104,7 @@ function setup() {
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "white";
         this.hasMoved = true;
+        
       }
       
     }
@@ -130,7 +123,7 @@ function setup() {
         icon = "\u265F";
       }
       strokeWeight(3);
-      text(icon, this.location[0], this.location[1] + windowHeight/60);
+      text(icon, this.location[0], this.location[1] + WinSize/60);
       // circle(this.location[0], this.location[1], WinSize/8.5);
     }
   }
@@ -221,9 +214,9 @@ function setup() {
       // fill(colour);
 
     }
-}
+} 
   WinSize = Math.min(windowWidth, windowHeight);
-  createCanvas(WinSize, WinSize);
+  canvas = createCanvas(WinSize, WinSize);
   black = false;
   blackStart = false;
   turn = "white"
@@ -243,10 +236,12 @@ function setup() {
   }
   blackPieces[9] = new knight(tileToXY(2, 1), "black");
   blackPieces[10] = new knight(tileToXY(7, 1), "black");
-
   
+  firstTime = !firstTime;
 }
 
+canvas = createCanvas(WinSize, WinSize);
+}
 function windowResized(){
   setup();
 }
