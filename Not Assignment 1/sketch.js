@@ -134,9 +134,17 @@ function setup() {
     constructor(location, team) {
       this.team = team;
       this.location = location;
-      
-      // this.colour = colour;
+      if (this.team === "black"){
+        this.knightFill = 0;
+        this.knightBorder = 255;
+      }
+
+      else if (this.team === "white"){
+      this.knightFill = 255;
+      this.knightBorder = 0;
+
     }
+  }
     currentTile(){
       return XYToTile(this.location[0], this.location[1]);
     }  
@@ -166,15 +174,13 @@ function setup() {
     }
   }
     draw(){
-      let knightFill;
-      let knightBorder;
+
       strokeWeight(WinSize/90);
       textSize(WinSize/7);
 
       if (this.team === "black"){
-      knightFill = 0;
-      knightBorder = 255;
-      stroke(0);
+
+      stroke(this.knightFill);
       strokeWeight(WinSize/90);
       textSize(WinSize/7);
       fill(0);
@@ -184,24 +190,23 @@ function setup() {
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
 
       strokeWeight(1);  
-      fill(255);
+      fill(this.knightBorder);
       textSize(WinSize/6.5);
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       // strokeWeight(1);
       stroke(255);
       }
       else if (this.team === "white"){
-      knightFill = 255;
-      knightBorder = 0;
+
     
-      fill(knightFill);
-      stroke(knightFill);
+      fill(this.knightFill);
+      stroke(this.knightFill);
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       textSize(WinSize/14);
       strokeWeight(WinSize/40)
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       strokeWeight(1);  
-      fill(knightBorder);
+      fill(this.knightBorder);
       textSize(WinSize/6.5);
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       }
