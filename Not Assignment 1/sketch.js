@@ -72,7 +72,7 @@ function setup() {
         // print(getMouseTile());
         // print([this.currentTile()[0]+ 1 , this.currentTile()[1] + 1])
         // print(getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] + 1)
-        if (trueIfPiece(blackPieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] + 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] + 1 || trueIfPiece(blackPieces, [this.currentTile()[0]- 1 , this.currentTile()[1] + 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] + 1){
+        if (trueIfPiece(blackPieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(blackPieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           scanForPiece(blackPieces, this.currentTile());
           selectedPiece.location = [-100, -100];
@@ -80,12 +80,12 @@ function setup() {
           this.hasMoved = true;
         }
         
-        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] + 2 && getMouseTile()[0] === this.currentTile()[0] && !truePieceOffsetArray(whitePieces, [[0, 1], [0, 2]], this.currentTile()) && !truePieceOffsetArray(blackPieces, [[0, 1], [0, 2]], this.currentTile())){
+        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] - 2 && getMouseTile()[0] === this.currentTile()[0] && !truePieceOffsetArray(whitePieces, [[0, -1], [0, -2]], this.currentTile()) && !truePieceOffsetArray(blackPieces, [[0, -1], [0, -2]], this.currentTile())){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           turn = "black";
           this.hasMoved = true;
           }
-        else if ((getMouseTile()[1] === this.currentTile()[1] + 1 && getMouseTile()[0] === this.currentTile()[0]) && !(trueIfPieceOffset(whitePieces, 0, 1, this.currentTile()) || trueIfPieceOffset(blackPieces, 0, 1, this.currentTile()))){
+        else if ((getMouseTile()[1] === this.currentTile()[1] - 1 && getMouseTile()[0] === this.currentTile()[0]) && !(trueIfPieceOffset(whitePieces, 0, -1, this.currentTile()) || trueIfPieceOffset(blackPieces, 0, -1, this.currentTile()))){
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "black";
         this.hasMoved = true;
@@ -95,7 +95,7 @@ function setup() {
 
       else{
 
-        if (trueIfPiece(whitePieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(whitePieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
+        if (trueIfPiece(whitePieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] + 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] + 1 || trueIfPiece(whitePieces, [this.currentTile()[0]- 1 , this.currentTile()[1] + 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] + 1){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           scanForPiece(whitePieces, this.currentTile());
           selectedPiece.location = [-100, -100];
@@ -103,12 +103,12 @@ function setup() {
           this.hasMoved = true;
         }
 
-        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] -2 && getMouseTile()[0] === this.currentTile()[0] && !truePieceOffsetArray(whitePieces, [[0, -1], [0, -2]], this.currentTile()) && !truePieceOffsetArray(blackPieces, [[0, -1], [0, -2]], this.currentTile())){
+        else if (this.hasMoved === false && getMouseTile()[1] === this.currentTile()[1] + 2 && getMouseTile()[0] === this.currentTile()[0] && !truePieceOffsetArray(whitePieces, [[0, 1], [0, 2]], this.currentTile()) && !truePieceOffsetArray(blackPieces, [[0, 1], [0, 2]], this.currentTile())){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           turn = "white";
           this.hasMoved = true;
           }
-        else if (getMouseTile()[1] === this.currentTile()[1] - 1 && getMouseTile()[0] === this.currentTile()[0]&& !(trueIfPieceOffset(whitePieces, 0, -1, this.currentTile()) || trueIfPieceOffset(blackPieces, 0, -1, this.currentTile()))){
+        else if (getMouseTile()[1] === this.currentTile()[1] + 1 && getMouseTile()[0] === this.currentTile()[0]&& !(trueIfPieceOffset(whitePieces, 0, 1, this.currentTile()) || trueIfPieceOffset(blackPieces, 0, 1, this.currentTile()))){
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "white";
         this.hasMoved = true;
@@ -119,31 +119,37 @@ function setup() {
 
     }
     draw(){
+      let icon;
       fill(this.colour);
       if (this.team === "white"){
         stroke(0);
+        icon = "\u2659";
       }
-      else{
+      else if(this.team === "black"){
         stroke(255);
+        icon = "\u265F";
       }
-      strokeWeight(1.2);
-      circle(this.location[0], this.location[1], WinSize/8.5);
+      strokeWeight(3);
+      text(icon, this.location[0], this.location[1] + windowHeight/65);
+      // circle(this.location[0], this.location[1], WinSize/8.5);
     }
   }
   class knight{
     constructor(location, team) {
       this.team = team;
       this.location = location;
+
       if (this.team === "black"){
-        this.knightFill = 0;
+        this.colour = 0;
         this.knightBorder = 255;
       }
 
       else if (this.team === "white"){
-      this.knightFill = 255;
+      this.colour = 255;
       this.knightBorder = 0;
 
     }
+    
   }
     currentTile(){
       return XYToTile(this.location[0], this.location[1]);
@@ -180,10 +186,10 @@ function setup() {
 
       if (this.team === "black"){
 
-      stroke(this.knightFill);
+      stroke(this.colour);
       strokeWeight(WinSize/90);
       textSize(WinSize/7);
-      fill(0);
+      fill(this.colour);
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       textSize(WinSize/14);
       strokeWeight(WinSize/40)
@@ -191,6 +197,7 @@ function setup() {
 
       strokeWeight(1);  
       fill(this.knightBorder);
+      stroke(this.knightBorder);
       textSize(WinSize/6.5);
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       // strokeWeight(1);
@@ -199,8 +206,8 @@ function setup() {
       else if (this.team === "white"){
 
     
-      fill(this.knightFill);
-      stroke(this.knightFill);
+      fill(this.colour);
+      stroke(this.colour);
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       textSize(WinSize/14);
       strokeWeight(WinSize/40)
@@ -211,7 +218,7 @@ function setup() {
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       }
 
-      // fill(knightFill);
+      // fill(colour);
 
     }
 }
@@ -226,16 +233,16 @@ function setup() {
 
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = whitePieces[pawn];
-    whitePieces[pawn] = new Pawn(tileToXY(pawn+1, 2),"white", 255);
+    whitePieces[pawn] = new Pawn(tileToXY(pawn+1, 7),"white", 255);
   }
-  whitePieces[9] = new knight(tileToXY(2, 1), "white");
-  whitePieces[10] = new knight(tileToXY(7, 1), "white");
+  whitePieces[9] = new knight(tileToXY(2, 8), "white");
+  whitePieces[10] = new knight(tileToXY(7, 8), "white");
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = blackPieces[pawn];
-    blackPieces[pawn] = new Pawn(tileToXY(pawn+1, 7), "black", 0);
+    blackPieces[pawn] = new Pawn(tileToXY(pawn+1, 2), "black", 0);
   }
-  blackPieces[9] = new knight(tileToXY(2, 8), "black");
-  blackPieces[10] = new knight(tileToXY(7, 8), "black");
+  blackPieces[9] = new knight(tileToXY(2, 1), "black");
+  blackPieces[10] = new knight(tileToXY(7, 1), "black");
 
   
 }
