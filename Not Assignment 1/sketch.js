@@ -12,11 +12,14 @@ let pawn, knight, bishop, rook, queen, king;
 let pieceOne
 let whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight;
 let whiteKnightOne, whiteKnightTwo;
+let whiteRookOne, whiteRookTwo;
 let blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight;
 let blackKnightOne, blackKnightTwo;
+let blackRookOne, blackRookTwo;
 let turn;
 let selectedPiece;
 let firstTime = true;
+let canvas
 function preload() {
 
 }
@@ -215,14 +218,89 @@ function setup() {
 
     }
 } 
+class Rook{
+  constructor(location, team) {
+    this.team = team;
+    this.location = location;
+
+    if (this.team === "black"){
+      this.colour = 0;
+      this.rookBorder = 255;
+    }
+
+    else if (this.team === "white"){
+    this.colour = 255;
+    this.rookBorder = 0;
+
+  }
+  
+}
+  currentTile(){
+    return XYToTile(this.location[0], this.location[1]);
+  }  
+  move(){
+    if (turn === "white"){
+
+      if (ifOffsetArray(getMouseTile(), [[0, 1],[0,2],[0, 3],[0,4],[0, 5],[0, 6],[0, 7],[0, 8],[0, -1],[0, -2],[0, -3],[0, -4],[0, -5],[0, -6],[0, -7],[0, -8],[1, 0],[2, 0],[3, 0],[4, 0][5, 0],[6, 0],[7, 0],[8, 0],[-1, 0],[-2, 0],[-3, 0],[-4, 0][-5, 0],[-6, 0],[-7, 0],[-8, 0]], this.currentTile()) && !truePieceBetweenOffset(whitePieces, getMouseTile()[0], "x",   this.currentTile()) && !truePieceBetweenOffset(whitePieces, getMouseTile()[1], "y", this.currentTile())){
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        scanForPiece(blackPieces, this.currentTile());
+        if (selectedPiece.team === "black"){
+        selectedPiece.location = [-100, -100];
+        }
+        turn = "black";
+      }
+
+      }
+    else if (turn === "black"){
+
+      if (ifOffsetArray(getMouseTile(), [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]], this.currentTile()) && !trueIfPiece(blackPieces,  getMouseTile())){
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        scanForPiece(whitePieces, this.currentTile());
+        if (selectedPiece.team === "white"){
+        selectedPiece.location = [-100, -100];
+        }
+        turn = "white";
+      }
+  }
+}
+  draw(){
+
+    strokeWeight(WinSize/90);
+    textSize(WinSize/7);
+
+    if (this.team === "black"){
+
+    fill(this.colour);
+    stroke(this.rookBorder);
+
+    text("\u265C", this.location[0], this.location[1] + WinSize/70);
+    
+    strokeWeight(1);
+    stroke(255);
+    }
+    else if (this.team === "white"){
+
+  
+    fill(this.colour);
+    stroke(this.rookBorder);
+    text("\u2656", this.location[0], this.location[1] + WinSize/70);
+    strokeWeight(1);
+    stroke(255);
+
+    }
+
+    // fill(colour);
+
+  }
+} 
   WinSize = Math.min(windowWidth, windowHeight);
   canvas = createCanvas(WinSize, WinSize);
   black = false;
   blackStart = false;
   turn = "white"
   pieceSelected = false;
-  whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight, whiteKnightOne, whiteKnightTwo];
-  blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight, blackKnightOne, blackKnightTwo];
+  whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight, whiteKnightOne, whiteKnightTwo, whiteRookOne, whiteRookTwo]; 
+  blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight, blackKnightOne, blackKnightTwo, blackRookOne, blackRookTwo];
 
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = whitePieces[pawn];
@@ -230,13 +308,18 @@ function setup() {
   }
   whitePieces[9] = new knight(tileToXY(2, 8), "white");
   whitePieces[10] = new knight(tileToXY(7, 8), "white");
+
+  whitePieces[11] = new Rook(tileToXY(1, 8), "white");
+  whitePieces[12] = new Rook(tileToXY(8, 8), "white");
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = blackPieces[pawn];
     blackPieces[pawn] = new Pawn(tileToXY(pawn+1, 2), "black", 0);
   }
   blackPieces[9] = new knight(tileToXY(2, 1), "black");
   blackPieces[10] = new knight(tileToXY(7, 1), "black");
-  
+
+  blackPieces[11] = new Rook(tileToXY(1, 1), "black");
+  blackPieces[12] = new Rook(tileToXY(8, 1), "black");
   firstTime = !firstTime;
 }
 
@@ -363,11 +446,54 @@ function ifOffsetArray(comparedValue, offsets, tileOfOffsets){
     if (offsets[i][0] === comparedValue[0] && offsets[i][1] === comparedValue[1]){
       return true;
     }
-    
   }
+
 return false;
 }
+function truePieceOffsetArray(team, offsetsXY, thisTile){
+  let pointsArray = offsetsXY;
+  for (let i = 0; i < pointsArray.length; i++) {
+    const element = pointsArray[i];
+    if (trueIfPieceOffset(team, pointsArray[i][0], pointsArray[i][1], thisTile)){
+      return true;
+    }
+  }
+  return false;
+}
 
+function truePieceBetweenOffset(team, offset, XOrY, thisTile){
+  let x = 0;
+  let y = 0;
+  let isX;
+  let negativeMultiplier = 1;
+
+  if (XOrY === "x"){
+    isX = true;
+  }
+  else if (XOrY === "y"){
+    isX = true;
+  }
+
+  if (offset < 0){
+    negativeMultiplier = -1;
+  }
+
+  for (let i = 0; i < abs(offset); i++) {
+    if (isX === true){
+      x = i * negativeMultiplier;
+      y = 0;
+    }
+    else if (isX === false){
+      x = 0;
+      y = i * negativeMultiplier;
+    }
+    const element = pointsArray[i];
+    if (trueIfPieceOffset(team, x, y, thisTile)){
+      return true;
+    }
+  }
+  return false;
+}
 
 function mouseClicked(){
   
