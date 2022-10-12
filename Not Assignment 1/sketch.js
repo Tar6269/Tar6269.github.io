@@ -240,7 +240,9 @@ class Rook{
   }  
   move(){
     if (turn === "white"){
-
+      // print(ifOffsetArray(getMouseTile(), [[0, 1],[0,2],[0, 3],[0,4],[0, 5],[0, 6],[0, 7],[0, 8],[0, -1],[0, -2],[0, -3],[0, -4],[0, -5],[0, -6],[0, -7],[0, -8],[1, 0],[2, 0],[3, 0],[4, 0][5, 0],[6, 0],[7, 0],[8, 0],[-1, 0],[-2, 0],[-3, 0],[-4, 0][-5, 0],[-6, 0],[-7, 0],[-8, 0]], this.currentTile()));
+      print(truePieceBetweenOffset(whitePieces, getMouseTile()[0], "x",   this.currentTile()));
+      print(truePieceBetweenOffset(whitePieces, getMouseTile()[1], "y", this.currentTile()));
       if (ifOffsetArray(getMouseTile(), [[0, 1],[0,2],[0, 3],[0,4],[0, 5],[0, 6],[0, 7],[0, 8],[0, -1],[0, -2],[0, -3],[0, -4],[0, -5],[0, -6],[0, -7],[0, -8],[1, 0],[2, 0],[3, 0],[4, 0][5, 0],[6, 0],[7, 0],[8, 0],[-1, 0],[-2, 0],[-3, 0],[-4, 0][-5, 0],[-6, 0],[-7, 0],[-8, 0]], this.currentTile()) && !truePieceBetweenOffset(whitePieces, getMouseTile()[0], "x",   this.currentTile()) && !truePieceBetweenOffset(whitePieces, getMouseTile()[1], "y", this.currentTile())){
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         scanForPiece(blackPieces, this.currentTile());
@@ -436,13 +438,13 @@ function ifOffsetArray(comparedValue, offsets, tileOfOffsets){
     offsets[i][0] = tileOfOffsets[0] + offsets[i][0];
     offsets[i][1] = tileOfOffsets[1] + offsets[i][1];
 
-    print(offsets[i][0]);
+    // print(offsets[i][0]);
 
-    print(comparedValue[0]);
+    // print(comparedValue[0]);
 
-    print(offsets[i][1]);
+    // print(offsets[i][1]);
 
-    print(comparedValue[1]);
+    // print(comparedValue[1]);
     if (offsets[i][0] === comparedValue[0] && offsets[i][1] === comparedValue[1]){
       return true;
     }
@@ -471,14 +473,14 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
     isX = true;
   }
   else if (XOrY === "y"){
-    isX = true;
+    isX = false;
   }
 
   if (offset < 0){
     negativeMultiplier = -1;
   }
 
-  for (let i = 0; i < abs(offset); i++) {
+  for (let i = 1; i <= abs(offset); i++) {
     if (isX === true){
       x = i * negativeMultiplier;
       y = 0;
@@ -487,14 +489,17 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
       x = 0;
       y = i * negativeMultiplier;
     }
-    const element = pointsArray[i];
+    print(i * negativeMultiplier);
+    print(trueIfPieceOffset(team, x, y, thisTile));
     if (trueIfPieceOffset(team, x, y, thisTile)){
       return true;
     }
   }
   return false;
 }
-
+// getOffset(newTile, thisTile){
+  
+// }
 function mouseClicked(){
   
   if (pieceSelected === false){
