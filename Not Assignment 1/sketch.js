@@ -1,15 +1,15 @@
 // Project Title
+//  Chess (milestone submission)
 // Your Name
+//  Taran Rengarajan
 // Date
-//
+//  13/10/22
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-//initialize variables
+// large amount of work put in, object oriented programming
+//initializing variables
 let WinSize;
-let black, blackStart;
 let whitePieces, blackPieces;
-let pawn, knight, bishop, rook, queen, king;
-let pieceOne
 let whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight;
 let whiteKnightOne, whiteKnightTwo;
 let whiteRookOne, whiteRookTwo;
@@ -27,24 +27,28 @@ function preload() {
 
 
 function getMouseTile(){
+  /** Returns the coordinates on an 8x8 board of the tile the mouse is hovering over*/ 
   let tileX = floor(map(mouseX, 0, width, 0, 8))+ 1;
   let tileY = floor(map(mouseY, 0, height, 0, 8)) + 1;
   
   return [tileX, tileY];
 }
 function tileToXY(tileWidth, tileHeight){
+  /** converts a set of 8x8 tile coordinates to the middle of the respective tile's javascript coordinates*/
   let tileX = map(tileWidth -0.5, 0, 8, 0, width);
   let tileY = map(tileHeight -0.5, 0, 8, 0, height);
 
   return [tileX, tileY];
 }
 function XYToTile(tileWidth, tileHeight){
+  /** gets the 8x8 coordinates of the tile that the given javascript coordinates are on*/
   let tileX = floor(map(tileWidth, 0, width, 0, 8))+ 1;
   let tileY = floor(map(tileHeight, 0, height, 0, 8)) + 1;
 
   return [tileX, tileY];
 }
 function setup() {
+  textAlign(CENTER, CENTER);
   if (firstTime === true){
   class Pawn{
     constructor(location, team, colour) {
@@ -62,11 +66,7 @@ function setup() {
     move(){
 
       if (turn === "white"){
-        // print(this.currentTile());
-        // print(trueIfPiece(blackPieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] + 1]));
-        // print(getMouseTile());
-        // print([this.currentTile()[0]+ 1 , this.currentTile()[1] + 1])
-        // print(getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] + 1)
+
         if (trueIfPiece(blackPieces, [this.currentTile()[0]+ 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0]+ 1 && getMouseTile()[1] === this.currentTile()[1] - 1 || trueIfPiece(blackPieces, [this.currentTile()[0]- 1 , this.currentTile()[1] - 1]) && getMouseTile()[0] === this.currentTile()[0] - 1 && getMouseTile()[1] === this.currentTile()[1] - 1){
           this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
           scanForPiece(blackPieces, this.currentTile());
@@ -127,7 +127,6 @@ function setup() {
       }
       strokeWeight(3);
       text(icon, this.location[0], this.location[1] + WinSize/60);
-      // circle(this.location[0], this.location[1], WinSize/8.5);
     }
   }
   class knight{
@@ -196,7 +195,6 @@ function setup() {
       stroke(this.knightBorder);
       textSize(WinSize/6.5);
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
-      // strokeWeight(1);
       stroke(255);
       }
       else if (this.team === "white"){
@@ -213,8 +211,6 @@ function setup() {
       textSize(WinSize/6.5);
       text("\u2658", this.location[0], this.location[1] + WinSize/70);
       }
-
-      // fill(colour);
 
     }
 } 
@@ -290,9 +286,6 @@ class Rook{
     stroke(255);
 
     }
-
-    // fill(colour);
-
   }
 } 
   WinSize = Math.min(windowWidth, windowHeight);
@@ -331,7 +324,7 @@ function windowResized(){
   setup();
 }
 function drawBoard(){
-
+/**Draws the checkerboard pattern of a chessboard. Goes at start of draw loop. */
   fill(0)
   for (let x = 0; x <8; x++){
     if (blackStart === true){
@@ -357,6 +350,7 @@ function drawBoard(){
 }
 
 function drawPieces(){
+  /**Calls the .draw() function of each piece in each team. goes in draw loop. */
   for (let piece = 0; piece < whitePieces.length; piece++) {
     const element = whitePieces[piece];
     whitePieces[piece].draw();
@@ -370,19 +364,15 @@ function drawPieces(){
 }
 
 function draw() {
+  
   drawBoard();
   drawPieces();
-  textAlign(CENTER, CENTER);
-
-
-
-  // strokeWeight(1);
-  // textSize(WinSize/6);
-  // text("\u2658", tileToXY(2,1)[0], tileToXY(2,1)[1]);
+  
 
 }
 
 function scanForPiece(team, selectedTile){
+  /** Runs through each of a team's piece locations, and sets the "selectedPiece" variable to a piece if there is one*/
   for (let piece = 0; piece < team.length; piece++) {
     const element = team[piece];
     // print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
@@ -396,11 +386,11 @@ function scanForPiece(team, selectedTile){
   }
 
 function trueIfPiece(team, selectedTile){
+  /**Returns true if there is a piece at a specified tile. */
   for (let piece = 0; piece < team.length; piece++) {
     const element = team[piece];
     if (team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]){
-      // print(team[piece].currentTile()[0] === selectedTile[0]);
-      // print(team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]);
+
       return true;
       }
     
@@ -409,9 +399,11 @@ function trueIfPiece(team, selectedTile){
 }
 
 function trueIfPieceOffset(team, offsetX, offsetY, thisTile){
+  /**returns true if there is a piece at the offset for thisTile */
   return (trueIfPiece(team, [thisTile[0] + offsetX, thisTile[1] + offsetY]));
 }
 function truePieceOffsetArray(team, offsetsXY, thisTile){
+  /**returns true if there is a piece at an array of offsets for thisTile */
   let pointsArray = offsetsXY;
   for (let i = 0; i < pointsArray.length; i++) {
     const element = pointsArray[i];
@@ -423,6 +415,7 @@ function truePieceOffsetArray(team, offsetsXY, thisTile){
 }
 
 function trueIfAnyEqual(comparedValue, array){
+  /**Compares the values of an array or tuples to a single inputted tuple, returns true if any in the array are equal to comparedValue*/
   for (let i = 0; i < array.length; i++) {
     const element = array[i];
     if (comparedValue[0] === array[i][0] && comparedValue[1] === array[i][1]){
@@ -433,18 +426,12 @@ function trueIfAnyEqual(comparedValue, array){
   return false;
 }
 function ifOffsetArray(comparedValue, offsets, tileOfOffsets){
+  /** Returns true if comparedValue is equal to the value of the tile of the offsets of tileOfOffsets*/
   for (let i = 0; i < offsets.length; i++) {
     const element = offsets[i];
     offsets[i][0] = tileOfOffsets[0] + offsets[i][0];
     offsets[i][1] = tileOfOffsets[1] + offsets[i][1];
 
-    // print(offsets[i][0]);
-
-    // print(comparedValue[0]);
-
-    // print(offsets[i][1]);
-
-    // print(comparedValue[1]);
     if (offsets[i][0] === comparedValue[0] && offsets[i][1] === comparedValue[1]){
       return true;
     }
@@ -452,18 +439,10 @@ function ifOffsetArray(comparedValue, offsets, tileOfOffsets){
 
 return false;
 }
-function truePieceOffsetArray(team, offsetsXY, thisTile){
-  let pointsArray = offsetsXY;
-  for (let i = 0; i < pointsArray.length; i++) {
-    const element = pointsArray[i];
-    if (trueIfPieceOffset(team, pointsArray[i][0], pointsArray[i][1], thisTile)){
-      return true;
-    }
-  }
-  return false;
-}
+
 
 function truePieceBetweenOffset(team, offset, XOrY, thisTile){
+  /** Returns true if there is a piece between two points in a horizontal or vertical axis */
   let x = 0;
   let y = 0;
   let isX;
@@ -497,9 +476,11 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
   }
   return false;
 }
+// W.I.P. function
 // getOffset(newTile, thisTile){
   
 // }
+
 function mouseClicked(){
   
   if (pieceSelected === false){
