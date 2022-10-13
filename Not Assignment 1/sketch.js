@@ -19,42 +19,40 @@ let blackRookOne, blackRookTwo;
 let turn;
 let selectedPiece;
 let firstTime = true;
-let canvas
+let canvas;
 function preload() {
 
 }
 
-
-
 function getMouseTile(){
   /** Returns the coordinates on an 8x8 board of the tile the mouse is hovering over*/ 
-  let tileX = floor(map(mouseX, 0, width, 0, 8))+ 1;
-  let tileY = floor(map(mouseY, 0, height, 0, 8)) + 1;
+  let tileX = floor(map(mouseX, 0,WinSize, 0, 8))+ 1;
+  let tileY = floor(map(mouseY, 0, WinSize, 0, 8)) + 1;
   
   return [tileX, tileY];
 }
 function tileToXY(tileWidth, tileHeight){
   /** converts a set of 8x8 tile coordinates to the middle of the respective tile's javascript coordinates*/
-  let tileX = map(tileWidth -0.5, 0, 8, 0, width);
-  let tileY = map(tileHeight -0.5, 0, 8, 0, height);
+  let tileX = map(tileWidth -0.5, 0, 8, 0, WinSize);
+  let tileY = map(tileHeight -0.5, 0, 8, 0, WinSize);
 
   return [tileX, tileY];
 }
 function XYToTile(tileWidth, tileHeight){
   /** gets the 8x8 coordinates of the tile that the given javascript coordinates are on*/
-  let tileX = floor(map(tileWidth, 0, width, 0, 8))+ 1;
-  let tileY = floor(map(tileHeight, 0, height, 0, 8)) + 1;
+  let tileX = floor(map(tileWidth, 0, WinSize, 0, 8))+ 1;
+  let tileY = floor(map(tileHeight, 0, WinSize, 0, 8)) + 1;
 
   return [tileX, tileY];
 }
 function setup() {
   textAlign(CENTER, CENTER);
-  if (firstTime === true){
+
   class Pawn{
     constructor(location, team, colour) {
       this.team = team;
       this.location = location;
-      
+      this.tile;
       this.colour = colour;
       this.hasMoved = false;
     }
@@ -133,7 +131,7 @@ function setup() {
     constructor(location, team) {
       this.team = team;
       this.location = location;
-
+      this.tile;
       if (this.team === "black"){
         this.colour = 0;
         this.knightBorder = 255;
@@ -218,7 +216,7 @@ class Rook{
   constructor(location, team) {
     this.team = team;
     this.location = location;
-
+    this.tile;
     if (this.team === "black"){
       this.colour = 0;
       this.rookBorder = 255;
@@ -236,29 +234,37 @@ class Rook{
   }  
   move(){
     if (turn === "white"){
-      // print(ifOffsetArray(getMouseTile(), [[0, 1],[0,2],[0, 3],[0,4],[0, 5],[0, 6],[0, 7],[0, 8],[0, -1],[0, -2],[0, -3],[0, -4],[0, -5],[0, -6],[0, -7],[0, -8],[1, 0],[2, 0],[3, 0],[4, 0][5, 0],[6, 0],[7, 0],[8, 0],[-1, 0],[-2, 0],[-3, 0],[-4, 0][-5, 0],[-6, 0],[-7, 0],[-8, 0]], this.currentTile()));
-      print(truePieceBetweenOffset(whitePieces, getMouseTile()[0], "x",   this.currentTile()));
-      print(truePieceBetweenOffset(whitePieces, getMouseTile()[1], "y", this.currentTile()));
-      if (ifOffsetArray(getMouseTile(), [[0, 1],[0,2],[0, 3],[0,4],[0, 5],[0, 6],[0, 7],[0, 8],[0, -1],[0, -2],[0, -3],[0, -4],[0, -5],[0, -6],[0, -7],[0, -8],[1, 0],[2, 0],[3, 0],[4, 0][5, 0],[6, 0],[7, 0],[8, 0],[-1, 0],[-2, 0],[-3, 0],[-4, 0][-5, 0],[-6, 0],[-7, 0],[-8, 0]], this.currentTile()) && !truePieceBetweenOffset(whitePieces, getMouseTile()[0], "x",   this.currentTile()) && !truePieceBetweenOffset(whitePieces, getMouseTile()[1], "y", this.currentTile())){
+
+      print(getOffsetTile(getMouseTile(), this.currentTile()))
+      if ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile()) === [0, 0]) && !truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile())){
+
+        print(truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x", this.currentTile()));
+        print(truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()));
+      
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        turn = "black";
         scanForPiece(blackPieces, this.currentTile());
         if (selectedPiece.team === "black"){
         selectedPiece.location = [-100, -100];
         }
-        turn = "black";
+     
       }
 
       }
     else if (turn === "black"){
 
-      if (ifOffsetArray(getMouseTile(), [[2, 1],[1,2],[-2, 1],[1,-2],[-1, -2],[-1, 2],[-2, -1],[2, -1]], this.currentTile()) && !trueIfPiece(blackPieces,  getMouseTile())){
+      print(getOffsetTile(getMouseTile(), this.currentTile()))
+      if ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile()) === [0, 0]) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile())){
+ 
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        turn = "white";
         scanForPiece(whitePieces, this.currentTile());
         if (selectedPiece.team === "white"){
         selectedPiece.location = [-100, -100];
         }
-        turn = "white";
+        selectedPiece.colour = 0;   
       }
+
   }
 }
   draw(){
@@ -290,6 +296,8 @@ class Rook{
 } 
   WinSize = Math.min(windowWidth, windowHeight);
   canvas = createCanvas(WinSize, WinSize);
+  canvas.center("horizontal")
+
   black = false;
   blackStart = false;
   turn = "white"
@@ -316,12 +324,15 @@ class Rook{
   blackPieces[11] = new Rook(tileToXY(1, 1), "black");
   blackPieces[12] = new Rook(tileToXY(8, 1), "black");
   firstTime = !firstTime;
-}
+
 
 canvas = createCanvas(WinSize, WinSize);
 }
 function windowResized(){
-  setup();
+  WinSize = min(windowWidth, windowHeight);
+  resizeCanvas(WinSize, WinSize);
+  correctPieceLocations();
+  canvas.center("horizontal")
 }
 function drawBoard(){
 /**Draws the checkerboard pattern of a chessboard. Goes at start of draw loop. */
@@ -362,6 +373,38 @@ function drawPieces(){
     
   }
 }
+
+function savePieceLocations(){
+  /**updates the .tile element of each piece, used for in case of resized window*/
+  for (let piece = 0; piece < whitePieces.length; piece++) {
+    const element = whitePieces[piece];
+    whitePieces[piece].tile = XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]);
+    print(whitePieces[piece].tile);
+    print(whitePieces[piece].tile[0]);
+    print(tileToXY(whitePieces[piece].tile[0], whitePieces[piece].tile[1]));
+  }
+
+  for (let piece = 0; piece < blackPieces.length; piece++) {
+    const element = blackPieces[piece];
+    blackPieces[piece].tile = XYToTile(blackPieces[piece].location[0], blackPieces[piece].location[1]);
+    // print(blackPieces[piece].tile)
+  }
+}
+function correctPieceLocations(){
+  /**moves pieces to their .tile locations*/
+  for (let piece = 0; piece < whitePieces.length; piece++) {
+    const element = whitePieces[piece];
+    whitePieces[piece].location = [map(whitePieces[piece].tile[0] -0.5, 0, 8, 0, WinSize), map(whitePieces[piece].tile[1] -0.5, 0, 8, 0, WinSize)];
+
+  }
+
+  for (let piece = 0; piece < blackPieces.length; piece++) {
+    const element = blackPieces[piece];
+    blackPieces[piece].location = [map(blackPieces[piece].tile[0] -0.5, 0, 8, 0, WinSize), map(blackPieces[piece].tile[1] -0.5, 0, 8, 0, WinSize)];
+    
+  }
+}
+
 
 function draw() {
   
@@ -461,15 +504,52 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
 
   for (let i = 1; i <= abs(offset); i++) {
     if (isX === true){
-      x = i * negativeMultiplier;
-      y = 0;
+      x = -i * negativeMultiplier;
+      y = 0;;
     }
     else if (isX === false){
       x = 0;
-      y = i * negativeMultiplier;
+      y = -i * negativeMultiplier;
+      
     }
-    print(i * negativeMultiplier);
-    print(trueIfPieceOffset(team, x, y, thisTile));
+    // print([x, y]);
+    // print(trueIfPieceOffset(team, x, y, thisTile));
+    if (trueIfPieceOffset(team, x, y, thisTile)){
+      return true;
+    }
+  }
+  return false;
+}
+function truePieceUptoOffset(team, offset, XOrY, thisTile){
+  /** Returns true if there is a piece up to a point in a horizontal or vertical axis */
+  let x = 0;
+  let y = 0;
+  let isX;
+  let negativeMultiplier = 1;
+
+  if (XOrY === "x"){
+    isX = true;
+  }
+  else if (XOrY === "y"){
+    isX = false;
+  }
+
+  if (offset < 0){
+    negativeMultiplier = -1;
+  }
+
+  for (let i = 1; i <= abs(offset) - 1; i++) {
+    if (isX === true){
+      x = -i * negativeMultiplier;
+      y = 0;;
+    }
+    else if (isX === false){
+      x = 0;
+      y = -i * negativeMultiplier;
+      
+    }
+    // print([x, y]);
+    // print(trueIfPieceOffset(team, x, y, thisTile));
     if (trueIfPieceOffset(team, x, y, thisTile)){
       return true;
     }
@@ -477,9 +557,10 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
   return false;
 }
 // W.I.P. function
-// getOffset(newTile, thisTile){
-  
-// }
+function getOffsetTile(offset, thisTile){
+
+  return [thisTile[0] - offset[0], thisTile[1] - offset[1]];
+}
 
 function mouseClicked(){
   
@@ -508,4 +589,5 @@ function mouseClicked(){
     pieceSelected = false;
   }
 
+  savePieceLocations();
 }
