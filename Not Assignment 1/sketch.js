@@ -319,7 +319,7 @@ class Bishop{
   move(){
     if (turn === "white"){
 
-      if (!truePieceBetweenDiag("white", getMouseTile(), this.currentTile())){
+      if (!truePieceUptoDiag(whitePieces, getMouseTile(), this.currentTile()) && !truePieceBetweenDiag(blackPieces, getMouseTile(), this.currentTile())){
     
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "black";
@@ -333,7 +333,7 @@ class Bishop{
       }
     else if (turn === "black"){
 
-      if ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 && getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile())){
+      if (!truePieceUptoDiag(blackPieces, getMouseTile(), this.currentTile()) && !truePieceBetweenDiag(whitePieces, getMouseTile(), this.currentTile())){
  
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "white";
@@ -348,15 +348,16 @@ class Bishop{
 }
   draw(){
 
-    strokeWeight(WinSize/90);
-    textSize(WinSize/7);
+    strokeWeight(WinSize/180);
+    // strokeWeight(1);
+    textSize(WinSize/8.5);
 
     if (this.team === "black"){
-
+    
     fill(this.colour);
     stroke(this.bishopBorder);
 
-    text("\u265D", this.location[0], this.location[1] + WinSize/70);
+    text("\u265D", this.location[0], this.location[1] + WinSize/85);
     
     strokeWeight(1);
     stroke(255);
@@ -366,7 +367,7 @@ class Bishop{
   
     fill(this.colour);
     stroke(this.bishopBorder);
-    text("\u2657", this.location[0], this.location[1] + WinSize/70);
+    text("\u2657", this.location[0], this.location[1] + WinSize/85);
     strokeWeight(1);
     stroke(255);
 
@@ -386,26 +387,33 @@ class Bishop{
   whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight, whiteKnightOne, whiteKnightTwo, whiteRookOne, whiteRookTwo, whiteBishopOne, whiteBishopTwo]; 
   blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight, blackKnightOne, blackKnightTwo, blackRookOne, blackRookTwo, blackBishopOne, blackBishopTwo];
 // creating pieces
+// White pieces
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = whitePieces[pawn];
     whitePieces[pawn] = new Pawn(tileToXY(pawn+1, 7),"white", 255);
   }
+
   whitePieces[9] = new knight(tileToXY(2, 8), "white");
   whitePieces[10] = new knight(tileToXY(7, 8), "white");
 
   whitePieces[11] = new Rook(tileToXY(1, 8), "white");
   whitePieces[12] = new Rook(tileToXY(8, 8), "white");
+
   whitePieces[13] = new Bishop(tileToXY(3, 8), "white");
   whitePieces[14] = new Bishop(tileToXY(6, 8), "white");
+
+// Black Pieces
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = blackPieces[pawn];
     blackPieces[pawn] = new Pawn(tileToXY(pawn+1, 2), "black", 0);
   }
+
   blackPieces[9] = new knight(tileToXY(2, 1), "black");
   blackPieces[10] = new knight(tileToXY(7, 1), "black");
 
   blackPieces[11] = new Rook(tileToXY(1, 1), "black");
   blackPieces[12] = new Rook(tileToXY(8, 1), "black");
+
   blackPieces[13] = new Bishop(tileToXY(3, 1), "black");
   blackPieces[14] = new Bishop(tileToXY(6, 1), "black");
 
@@ -610,27 +618,52 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
   return false;
 }
 
-function truePieceBetweenDiag(team, offset, thisTile){
-  print(abs(getOffsetTile(offset, thisTile)));
+function truePieceUptoDiag(team, offset, thisTile){
 
-  if(abs(getOffsetTile(offset, thisTile)[0]) === abs(getOffsetTile(offset, thisTile)[1])){
-    let negativeMultiplierX = 1;
-    let negativeMultiplierY = 1;
-    if (abs(getOffsetTile(offset, thisTile)[0]) < 0){
-      negativeMultiplierX = -1;
+  print([abs(getOffsetTile(offset, thisTile)[0]),abs(getOffsetTile(offset, thisTile)[1])]);
+
+  if(abs(getOffsetTile(offset, thisTile)[0]) === abs(getOffsetTile(offset, thisTile)[1]) && !(abs(getOffsetTile(offset, thisTile)[0]) === 0)){
+    let negativeMultiplierX = -1;
+    let negativeMultiplierY = -1;
+    
+    if (getOffsetTile(offset, thisTile)[0] < 0){
+      negativeMultiplierX = 1;
     }
-    if (abs(getOffsetTile(offset, thisTile)[1]) < 0){
-      negativeMultiplierY = -1;
+    if (getOffsetTile(offset, thisTile)[1] < 0){
+      negativeMultiplierY = 1;
     }
-    for (let i = 0; i < abs(getOffsetTile(offset, thisTile)[0]); i++){
+    for (let i = 1; i <= abs(getOffsetTile(offset, thisTile)[0]); i++){
       if(trueIfPieceOffset(team, i*negativeMultiplierX, i*negativeMultiplierY, thisTile)){
         return true;
       }
     }
+    return false;
   }
-  return false
+  return true;
 }
+function truePieceBetweenDiag(team, offset, thisTile){
 
+  print([abs(getOffsetTile(offset, thisTile)[0]),abs(getOffsetTile(offset, thisTile)[1])]);
+
+  if(abs(getOffsetTile(offset, thisTile)[0]) === abs(getOffsetTile(offset, thisTile)[1]) && !(abs(getOffsetTile(offset, thisTile)[0]) === 0)){
+    let negativeMultiplierX = -1;
+    let negativeMultiplierY = -1;
+    
+    if (getOffsetTile(offset, thisTile)[0] < 0){
+      negativeMultiplierX = 1;
+    }
+    if (getOffsetTile(offset, thisTile)[1] < 0){
+      negativeMultiplierY = 1;
+    }
+    for (let i = 1; i <= (abs(getOffsetTile(offset, thisTile)[0]) - 1); i++){
+      if(trueIfPieceOffset(team, i*negativeMultiplierX, i*negativeMultiplierY, thisTile)){
+        return true;
+      }
+    }
+    return false;
+  }
+  return true;
+}
 
 function truePieceUptoOffset(team, offset, XOrY, thisTile){
   /** Returns true if there is a piece up to a point in a horizontal or vertical axis */
