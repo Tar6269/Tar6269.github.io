@@ -32,10 +32,12 @@ function preload() {
 
 function getMouseTile(){
   /** Returns the coordinates on an 8x8 board of the tile the mouse is hovering over*/ 
+  if(0 < mouseX && mouseX < WinSize && 0 < mouseY && mouseY < WinSize){
   let tileX = floor(map(mouseX, 0,WinSize, 0, 8))+ 1;
   let tileY = floor(map(mouseY, 0, WinSize, 0, 8)) + 1;
-  
   return [tileX, tileY];
+  }
+  return [9999999999, 9999999999];
 }
 function tileToXY(tileWidth, tileHeight){
   /** converts a set of 8x8 tile coordinates to the middle of the respective tile's javascript coordinates*/
