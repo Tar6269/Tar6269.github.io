@@ -7,6 +7,9 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 // large amount of work put in, object oriented programming
+
+// all pieces are functioning, pieces only movable according to who's turn it is (starts on white, alternates each move)
+
 //initializing variables
 let WinSize;
 let whitePieces, blackPieces;
@@ -20,6 +23,7 @@ let turn;
 let selectedPiece;
 let firstTime = true;
 let canvas;
+let MenuOn;
 function preload() {
 
 }
@@ -113,6 +117,7 @@ function setup() {
 
     }
     draw(){
+      textSize(WinSize/7);
       let icon;
       fill(this.colour);
       if (this.team === "white"){
@@ -235,12 +240,8 @@ class Rook{
   move(){
     if (turn === "white"){
 
-      print(getOffsetTile(getMouseTile(), this.currentTile()))
-      if ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile()) === [0, 0]) && !truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile())){
-
-        print(truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x", this.currentTile()));
-        print(truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()));
-      
+      if ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 && getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) && !truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile())){
+    
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "black";
         scanForPiece(blackPieces, this.currentTile());
@@ -253,8 +254,7 @@ class Rook{
       }
     else if (turn === "black"){
 
-      print(getOffsetTile(getMouseTile(), this.currentTile()))
-      if ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile()) === [0, 0]) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile())){
+      if ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 && getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile())){
  
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "white";
@@ -294,6 +294,7 @@ class Rook{
     }
   }
 } 
+// startup configuration
   WinSize = Math.min(windowWidth, windowHeight);
   canvas = createCanvas(WinSize, WinSize);
   canvas.center("horizontal")
@@ -302,9 +303,10 @@ class Rook{
   blackStart = false;
   turn = "white"
   pieceSelected = false;
+  // adding pieces to team
   whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight, whiteKnightOne, whiteKnightTwo, whiteRookOne, whiteRookTwo]; 
   blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight, blackKnightOne, blackKnightTwo, blackRookOne, blackRookTwo];
-
+// creating pieces
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = whitePieces[pawn];
     whitePieces[pawn] = new Pawn(tileToXY(pawn+1, 7),"white", 255);
@@ -323,10 +325,10 @@ class Rook{
 
   blackPieces[11] = new Rook(tileToXY(1, 1), "black");
   blackPieces[12] = new Rook(tileToXY(8, 1), "black");
-  firstTime = !firstTime;
-
 
 canvas = createCanvas(WinSize, WinSize);
+MenuOn = true;
+savePieceLocations();
 }
 function windowResized(){
   WinSize = min(windowWidth, windowHeight);
@@ -379,15 +381,13 @@ function savePieceLocations(){
   for (let piece = 0; piece < whitePieces.length; piece++) {
     const element = whitePieces[piece];
     whitePieces[piece].tile = XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]);
-    print(whitePieces[piece].tile);
-    print(whitePieces[piece].tile[0]);
-    print(tileToXY(whitePieces[piece].tile[0], whitePieces[piece].tile[1]));
+
   }
 
   for (let piece = 0; piece < blackPieces.length; piece++) {
     const element = blackPieces[piece];
     blackPieces[piece].tile = XYToTile(blackPieces[piece].location[0], blackPieces[piece].location[1]);
-    // print(blackPieces[piece].tile)
+
   }
 }
 function correctPieceLocations(){
@@ -407,10 +407,18 @@ function correctPieceLocations(){
 
 
 function draw() {
-  
-  drawBoard();
+
+drawBoard();  
+
+if (MenuOn){
+  drawMenu();
+}
+else{
   drawPieces();
+}
+
   
+
 
 }
 
@@ -418,7 +426,6 @@ function scanForPiece(team, selectedTile){
   /** Runs through each of a team's piece locations, and sets the "selectedPiece" variable to a piece if there is one*/
   for (let piece = 0; piece < team.length; piece++) {
     const element = team[piece];
-    // print(XYToTile(whitePieces[piece].location[0], whitePieces[piece].location[1]));
     if (team[piece].currentTile()[0] === selectedTile[0] && team[piece].currentTile()[1] === selectedTile[1]){
       selectedPiece = team[piece];
       selectedPiece.colour = 100;
@@ -512,8 +519,7 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
       y = -i * negativeMultiplier;
       
     }
-    // print([x, y]);
-    // print(trueIfPieceOffset(team, x, y, thisTile));
+
     if (trueIfPieceOffset(team, x, y, thisTile)){
       return true;
     }
@@ -548,22 +554,31 @@ function truePieceUptoOffset(team, offset, XOrY, thisTile){
       y = -i * negativeMultiplier;
       
     }
-    // print([x, y]);
-    // print(trueIfPieceOffset(team, x, y, thisTile));
+
     if (trueIfPieceOffset(team, x, y, thisTile)){
       return true;
     }
   }
   return false;
 }
-// W.I.P. function
-function getOffsetTile(offset, thisTile){
 
+function getOffsetTile(offset, thisTile){
+// Returns offset of tile to provided offset
   return [thisTile[0] - offset[0], thisTile[1] - offset[1]];
 }
 
+function drawMenu(){
+  // Draws menu screen
+  fill(255, 30, 30);
+  textSize(WinSize/10);
+  text("JS CHESS", WinSize/2, WinSize/3);
+  textSize(WinSize/30);
+  text("by Taran", WinSize/2, WinSize/2);
+  text("(press any key to begin)", WinSize/2, WinSize/1.75);
+
+}
 function mouseClicked(){
-  
+if(!MenuOn){
   if (pieceSelected === false){
 
     if (turn === "white"){
@@ -588,6 +603,11 @@ function mouseClicked(){
     
     pieceSelected = false;
   }
-
   savePieceLocations();
+  
 }
+}
+function keyPressed(){
+  MenuOn = false;
+}
+
