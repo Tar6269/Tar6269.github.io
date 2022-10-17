@@ -37,8 +37,9 @@ function getMouseTile(){
   let tileY = floor(map(mouseY, 0, WinSize, 0, 8)) + 1;
   return [tileX, tileY];
   }
-  return [9999999999, 9999999999];
+  return [`f`, 9999999999];
 }
+
 function tileToXY(tileWidth, tileHeight){
   /** converts a set of 8x8 tile coordinates to the middle of the respective tile's javascript coordinates*/
   let tileX = map(tileWidth -0.5, 0, 8, 0, WinSize);
@@ -621,7 +622,7 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
 }
 
 function truePieceUptoDiag(team, offset, thisTile){
-
+/**returns true if there is a piece between thisTile, and a diagonal offset. includes thisTile as the final check*/
   print([abs(getOffsetTile(offset, thisTile)[0]),abs(getOffsetTile(offset, thisTile)[1])]);
 
   if(abs(getOffsetTile(offset, thisTile)[0]) === abs(getOffsetTile(offset, thisTile)[1]) && !(abs(getOffsetTile(offset, thisTile)[0]) === 0)){
@@ -644,7 +645,7 @@ function truePieceUptoDiag(team, offset, thisTile){
   return true;
 }
 function truePieceBetweenDiag(team, offset, thisTile){
-
+/**returns true if there is a piece between thisTile, and a diagonal offset. does not include ThisTile as the final check */
   print([abs(getOffsetTile(offset, thisTile)[0]),abs(getOffsetTile(offset, thisTile)[1])]);
 
   if(abs(getOffsetTile(offset, thisTile)[0]) === abs(getOffsetTile(offset, thisTile)[1]) && !(abs(getOffsetTile(offset, thisTile)[0]) === 0)){
