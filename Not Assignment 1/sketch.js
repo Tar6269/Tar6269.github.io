@@ -17,10 +17,12 @@ let whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, wh
 let whiteKnightOne, whiteKnightTwo;
 let whiteRookOne, whiteRookTwo;
 let whiteBishopOne, whiteBishopTwo;
+let whiteKing, whiteQueen;
 let blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight;
 let blackKnightOne, blackKnightTwo;
 let blackRookOne, blackRookTwo;
 let blackBishopOne, blackBishopTwo;
+let blackKing, blackQueen;
 let turn;
 let selectedPiece;
 let firstTime = true;
@@ -336,7 +338,7 @@ class Bishop{
       }
     else if (turn === "black"){
 
-      if (!truePieceUptoDiag(blackPieces, getMouseTile(), this.currentTile()) && !truePieceBetweenDiag(whitePieces, getMouseTile(), this.currentTile())){
+      if ((!truePieceUptoDiag(blackPieces, getMouseTile(), this.currentTile()) && !truePieceBetweenDiag(whitePieces, getMouseTile(), this.currentTile())) || ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 && getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()))){
  
         this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
         turn = "white";
@@ -377,6 +379,169 @@ class Bishop{
     }
   }
 } 
+class Queen{
+  constructor(location, team) {
+    this.team = team;
+    this.location = location;
+    this.tile;
+    if (this.team === "black"){
+      this.colour = 0;
+      this.queenBorder = 255;
+    }
+
+    else if (this.team === "white"){
+    this.colour = 255;
+    this.queenBorder = 0;
+
+  }
+  
+}
+  currentTile(){
+    return XYToTile(this.location[0], this.location[1]);
+  }  
+  move(){
+    if (turn === "white"){
+
+      if ((!truePieceUptoDiag(whitePieces, getMouseTile(), this.currentTile()) && !truePieceBetweenDiag(blackPieces, getMouseTile(), this.currentTile())) || ((getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 || getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) &&  !truePieceBetweenOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceBetweenOffset(whitePieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()) && !(getOffsetTile(getMouseTile(), this.currentTile())[0] === 0 && getOffsetTile(getMouseTile(), this.currentTile())[1] === 0) && !truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[0], "x",   this.currentTile()) && !truePieceUptoOffset(blackPieces, getOffsetTile(getMouseTile(), this.currentTile())[1], "y", this.currentTile()))){
+    
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        turn = "black";
+        scanForPiece(blackPieces, this.currentTile());
+        if (selectedPiece.team === "black"){
+        selectedPiece.location = [-100, -100];
+        }
+     
+      }
+
+      }
+    else if (turn === "black"){
+
+      if (!truePieceUptoDiag(blackPieces, getMouseTile(), this.currentTile()) && !truePieceBetweenDiag(whitePieces, getMouseTile(), this.currentTile())){
+ 
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        turn = "white";
+        scanForPiece(whitePieces, this.currentTile());
+        if (selectedPiece.team === "white"){
+        selectedPiece.location = [-100, -100];
+        }
+        selectedPiece.colour = 0;   
+      }
+
+  }
+}
+  draw(){
+
+    strokeWeight(WinSize/180);
+    // strokeWeight(1);
+    textSize(WinSize/8.5);
+
+    if (this.team === "black"){
+    
+    fill(this.colour);
+    stroke(this.queenBorder);
+
+    text("\u2655", this.location[0], this.location[1] + WinSize/85);
+    
+    strokeWeight(1);
+    stroke(255);
+    }
+    else if (this.team === "white"){
+
+  
+    fill(this.colour);
+    stroke(this.queenBorder);
+    text("\u2655", this.location[0], this.location[1] + WinSize/85);
+    strokeWeight(1);
+    stroke(255);
+
+    }
+  }
+} 
+class King{
+  constructor(location, team) {
+    this.team = team;
+    this.location = location;
+    this.tile;
+    if (this.team === "black"){
+      this.colour = 0;
+      this.kingBorder = 255;
+    }
+
+    else if (this.team === "white"){
+    this.colour = 255;
+    this.kingBorder = 0;
+
+  }
+  
+}
+  currentTile(){
+    return XYToTile(this.location[0], this.location[1]);
+  }  
+  move(){
+    if (turn === "white"){
+
+      if (ifOffsetArray(getMouseTile(), [[-1, 1], [0, 1], [1, 1], [-1, 0],[1, 0],[-1, -1], [0, -1], [1, -1]], this.currentTile()) && !trueIfPiece(whitePieces,  getMouseTile())){
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        scanForPiece(blackPieces, this.currentTile());
+        if (selectedPiece.team === "black"){
+        selectedPiece.location = [-100, -100];
+        }
+        turn = "black";
+      }
+
+      }
+    else if (turn === "black"){
+
+      if (ifOffsetArray(getMouseTile(), [[-1, 1], [0, 1], [1, 1], [-1, 0],[1, 0],[-1, -1], [0, -1], [1, -1]], this.currentTile()) && !trueIfPiece(blackPieces,  getMouseTile())){
+        this.location = tileToXY(getMouseTile()[0], getMouseTile()[1]);
+        scanForPiece(whitePieces, this.currentTile());
+        if (selectedPiece.team === "white"){
+        selectedPiece.location = [-100, -100];
+        }
+        turn = "white";
+      }
+  }
+}
+  draw(){
+
+    strokeWeight(WinSize/90);
+    textSize(WinSize/7);
+
+    if (this.team === "black"){
+
+    stroke(this.colour);
+    strokeWeight(WinSize/90);
+    textSize(WinSize/7.5);
+    fill(this.colour);
+    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    textSize(WinSize/14);
+    strokeWeight(WinSize/40)
+    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+
+    strokeWeight(1);  
+    fill(this.kingBorder);
+    stroke(this.kingBorder);
+    textSize(WinSize/7.5);
+    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    stroke(255);
+    }
+    else if (this.team === "white"){
+
+  
+    fill(this.colour);
+    stroke(this.colour);
+    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    textSize(WinSize/14);
+    strokeWeight(WinSize/180)
+    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    strokeWeight(1);  
+    fill(this.kingBorder);
+    textSize(WinSize/7.5);
+    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    }
+
+  }
+} 
 // startup configuration
   WinSize = Math.min(windowWidth, windowHeight);
   canvas = createCanvas(WinSize, WinSize);
@@ -387,8 +552,8 @@ class Bishop{
   turn = "white"
   pieceSelected = false;
   // adding pieces to team
-  whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight, whiteKnightOne, whiteKnightTwo, whiteRookOne, whiteRookTwo, whiteBishopOne, whiteBishopTwo]; 
-  blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight, blackKnightOne, blackKnightTwo, blackRookOne, blackRookTwo, blackBishopOne, blackBishopTwo];
+  whitePieces = [whitePawnOne, whitePawnTwo, whitePawnThree, whitePawnFour, whitePawnFive, whitePawnSix, whitePawnSeven, whitePawnEight, whiteKnightOne, whiteKnightTwo, whiteRookOne, whiteRookTwo, whiteBishopOne, whiteBishopTwo, whiteQueen, whiteKing]; 
+  blackPieces = [blackPawnOne, blackPawnTwo, blackPawnThree, blackPawnFour, blackPawnFive, blackPawnSix, blackPawnSeven, blackPawnEight, blackKnightOne, blackKnightTwo, blackRookOne, blackRookTwo, blackBishopOne, blackBishopTwo, blackQueen, blackKing];
 // creating pieces
 // White pieces
   for (let pawn = 0; pawn < 9; pawn++) {
@@ -405,6 +570,9 @@ class Bishop{
   whitePieces[13] = new Bishop(tileToXY(3, 8), "white");
   whitePieces[14] = new Bishop(tileToXY(6, 8), "white");
 
+  whitePieces[15] = new Queen(tileToXY(4, 8), "white");
+
+  whitePieces[16] = new King(tileToXY(5, 8), "white");
 // Black Pieces
   for (let pawn = 0; pawn < 9; pawn++) {
     const element = blackPieces[pawn];
@@ -420,6 +588,9 @@ class Bishop{
   blackPieces[13] = new Bishop(tileToXY(3, 1), "black");
   blackPieces[14] = new Bishop(tileToXY(6, 1), "black");
 
+  blackPieces[15] = new Queen(tileToXY(4, 1), "black");
+
+  blackPieces[16] = new King(tileToXY(5, 1), "black");
 canvas = createCanvas(WinSize, WinSize);
 MenuOn = true;
 savePieceLocations();
@@ -611,7 +782,7 @@ function truePieceBetweenOffset(team, offset, XOrY, thisTile){
     else if (isX === false){
       x = 0;
       y = -i * negativeMultiplier;
-      
+       
     }
 
     if (trueIfPieceOffset(team, x, y, thisTile)){
