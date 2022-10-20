@@ -433,14 +433,14 @@ class Queen{
 
     strokeWeight(WinSize/180);
     // strokeWeight(1);
-    textSize(WinSize/8.5);
+    textSize(WinSize/7.25);
 
     if (this.team === "black"){
     
     fill(this.colour);
     stroke(this.queenBorder);
 
-    text("\u2655", this.location[0], this.location[1] + WinSize/85);
+    text("\u2655", this.location[0], this.location[1] + WinSize/55);
     
     strokeWeight(1);
     stroke(255);
@@ -450,7 +450,7 @@ class Queen{
   
     fill(this.colour);
     stroke(this.queenBorder);
-    text("\u2655", this.location[0], this.location[1] + WinSize/85);
+    text("\u2655", this.location[0], this.location[1] + WinSize/55);
     strokeWeight(1);
     stroke(255);
 
@@ -513,16 +513,16 @@ class King{
     strokeWeight(WinSize/90);
     textSize(WinSize/7.5);
     fill(this.colour);
-    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    text("\u2654", this.location[0], this.location[1] + WinSize/55);
     textSize(WinSize/14);
     strokeWeight(WinSize/40)
-    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    text("\u2654", this.location[0], this.location[1] + WinSize/55);
 
     strokeWeight(1);  
     fill(this.kingBorder);
     stroke(this.kingBorder);
     textSize(WinSize/7.5);
-    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    text("\u2654", this.location[0], this.location[1] + WinSize/55);
     stroke(255);
     }
     else if (this.team === "white"){
@@ -530,14 +530,15 @@ class King{
   
     fill(this.colour);
     stroke(this.colour);
-    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    textSize(WinSize/8);
+    text("\u2654", this.location[0], this.location[1] + WinSize/55);
     textSize(WinSize/14);
     strokeWeight(WinSize/180)
-    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    text("\u2654", this.location[0], this.location[1] + WinSize/55);
     strokeWeight(1);  
     fill(this.kingBorder);
     textSize(WinSize/7.5);
-    text("\u2654", this.location[0], this.location[1] + WinSize/70);
+    text("\u2654", this.location[0], this.location[1] + WinSize/55);
     }
 
   }
