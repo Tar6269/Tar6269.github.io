@@ -23,18 +23,18 @@ let cell = {
   cellX: 0,
   cellY: 0,
   isAlive: false, 
-  isSurviving: true
+  isSurviving: false
 }
 
 let cellsList = [];
-
+let rowLength = 5 ;
 let boardSize;
 function setup() {
   boardSize = min(windowWidth, windowHeight);
   canvas = createCanvas(boardSize, boardSize);
-  canvas.position(windowWidth/4);
-  for (let y = 0; y < 5; y++) {
-    for (let x = 0; x < 5; x++) {
+  canvas.center("horizontal")
+  for (let y = 0; y < rowLength; y++) {
+    for (let x = 0; x < rowLength; x++) {
 
       let newCell = {...cell};
 
@@ -54,9 +54,9 @@ function draw() {
   drawCells();
   if (millis() - lastTime > 2000){
   if (gameOn){
-  live();
   judicator();
-  lastTime = millis();
+  live();
+  lastTime = millis() + 2000;
   }
   }
   // square(boardSize/2, boardSize/2, boardSize/5);
@@ -78,7 +78,7 @@ function drawCells(){
     else{
       fill(255);
     }
-    square((element.cellX - 1)* boardSize/5, (element.cellY - 1)* boardSize/5, boardSize/5);
+    square((element.cellX - 1)* boardSize/rowLength, (element.cellY - 1)* boardSize/rowLength, boardSize/rowLength);
   }
 }
 
@@ -93,7 +93,7 @@ function lookForCell(placeX, placeY){
   for (let i = 0; i < cellsList.length; i++) {
     const element = cellsList[i];
     // print(floor(placeX * 5 / boardSize) + 1 === element.cellX && floor(placeY * 5 / boardSize) + 1 === element.cellY);
-    if (floor(placeX * 5 / boardSize) + 1 === element.cellX && floor(placeY * 5 / boardSize) + 1 === element.cellY){
+    if (floor(placeX * rowLength / boardSize) + 1 === element.cellX && floor(placeY * rowLength / boardSize) + 1 === element.cellY){
       
       return element;
     }
@@ -108,6 +108,8 @@ function mouseClicked(){
   if(mouseX> 0 && mouseY > 0 && mouseX < boardSize && mouseY < boardSize){
   print(lookForCell(mouseX, mouseY));
   lookForCell(mouseX, mouseY).isAlive = true;
+  lookForCell(mouseX, mouseY).isSurviving = true;
+
 }
 
 }
@@ -126,22 +128,24 @@ function live(){
 
     let aliveCount = 0;
 
-      for (let x = -1; x <= 1; x++) {
-        for (let y = -1; y <= 1; y++) {
+      for (let y = -1; y <= 1; y++) {
+        for (let x = -1; x <= 1; x++) {
           if (lookForCell(mouseX + x, mouseY + y) !== undefined){
-          if (lookForCell(mouseX + x, mouseY + y).isAlive && !(x=== 0 && y === 0)){
+            print("found a cell")
+            print(lookForCell(mouseX + (x * boardSize/5), mouseY + (y * boardSize/5)).isAlive);
+          if (lookForCell(mouseX + (x * boardSize/5), mouseY + (y * boardSize/5)).isAlive && !(x=== 0 && y === 0)){
             aliveCount++;
           }
         }
         }
       }
-
+        print(aliveCount);
         if (element.isAlive){
           if (aliveCount > 3 || aliveCount < 2){
             element.isSurviving = false;
           }
         }
-      else if(!element.isAlive){
+      else{
         if (aliveCount === 3){
           element.isSurviving = true;
         }
