@@ -27,23 +27,26 @@ let cell = {
 }
 
 let cellsList = [];
-let rowLength = 5 ;
+let rowLength = 5;
+let rowWidth = 5;
 let boardSize;
 function setup() {
   boardSize = min(windowWidth, windowHeight);
   canvas = createCanvas(boardSize, boardSize);
   canvas.center("horizontal")
   for (let y = 0; y < rowLength; y++) {
-    for (let x = 0; x < rowLength; x++) {
+    let newCellRow = []
+    for (let x = 0; x < rowWidth; x++) {
 
       let newCell = {...cell};
 
       newCell.cellX = x + 1;
       newCell.cellY = y + 1;
 
-      cellsList.push(newCell);
-      print(cellsList[x]);
+      newCellRow.push(newCell);
+      // print(cellsList[x]);
     }
+    cellsList.push([...newCellRow])
   }
   print(cellsList.length);
 
@@ -54,8 +57,9 @@ function draw() {
   drawCells();
   if (millis() - lastTime > 2000){
   if (gameOn){
-  judicator();
   live();
+  judicator();
+
   lastTime = millis() + 2000;
   }
   }
@@ -67,8 +71,9 @@ function draw() {
  */
 function drawCells(){
   
-  for (let i = 0; i < cellsList.length; i++) {
-    const element = cellsList[i];
+  for (let y = 0; y < rowLength; y++) {
+    for (let x = 0; x < rowWidth; x++) {
+    const element = cellsList[y][x];
 
     // print(element.cellX);
     // print(element.cellY);
@@ -81,7 +86,7 @@ function drawCells(){
     square((element.cellX - 1)* boardSize/rowLength, (element.cellY - 1)* boardSize/rowLength, boardSize/rowLength);
   }
 }
-
+}
 /**
  * returns the object related to the coordinates placeX and placeY
  * 
@@ -90,15 +95,17 @@ function drawCells(){
  *  
  */
 function lookForCell(placeX, placeY){
-  for (let i = 0; i < cellsList.length; i++) {
-    const element = cellsList[i];
+  for (let y = 0; y < cellsList.length; y++) {
+    for (let x = 0; x < cellsList.length; x++) {
+    const element = cellsList[y][x];
     // print(floor(placeX * 5 / boardSize) + 1 === element.cellX && floor(placeY * 5 / boardSize) + 1 === element.cellY);
     if (floor(placeX * rowLength / boardSize) + 1 === element.cellX && floor(placeY * rowLength / boardSize) + 1 === element.cellY){
       
       return element;
     }
-
   }
+}
+  return undefined;
 }
 
 /**
@@ -106,7 +113,7 @@ function lookForCell(placeX, placeY){
  */
 function mouseClicked(){
   if(mouseX> 0 && mouseY > 0 && mouseX < boardSize && mouseY < boardSize){
-  print(lookForCell(mouseX, mouseY));
+  // print(lookForCell(mouseX, mouseY));
   lookForCell(mouseX, mouseY).isAlive = true;
   lookForCell(mouseX, mouseY).isSurviving = true;
 
@@ -123,36 +130,45 @@ function keyPressed(){
  */
 function live(){
 
-  for (let i = 0; i < cellsList.length; i++) {
-    const element = cellsList[i];
+  for (let y = 0; y < rowLength; y++) {
+    for (let x = 0; x < rowWidth; x++) {
+    const element = cellsList[y][x];
 
     let aliveCount = 0;
 
-      for (let y = -1; y <= 1; y++) {
-        for (let x = -1; x <= 1; x++) {
-          if (lookForCell(mouseX + x, mouseY + y) !== undefined){
+      for (let y = -1; y < 2; y++) {
+        // print("test2")
+        for (let x = -1; x < 2; x++) {
+          // print("test");
+
+          if (lookForCell(element.cellX + (x * boardSize/rowLength), element.cellX + (y * boardSize/rowLength)) !== undefined){
             print("found a cell")
-            print(lookForCell(mouseX + (x * boardSize/5), mouseY + (y * boardSize/5)).isAlive);
-          if (lookForCell(mouseX + (x * boardSize/5), mouseY + (y * boardSize/5)).isAlive && !(x=== 0 && y === 0)){
+            // print(lookForCell(element.cellX + (x * boardSize/rowLength), element.cellY + (y * boardSize/rowLength)));
+            if (lookForCell(element.cellX + (x * boardSize/rowLength), element.cellY + (y * boardSize/rowLength)).isAlive&& !(x === 0 && y === 0)){
+              print("true was returned");
+            }
+          if (lookForCell(element.cellX + (x * boardSize/rowLength), element.cellY + (y * boardSize/rowLength)).isAlive && !(x === 0 && y === 0)){
             aliveCount++;
           }
-        }
+        
         }
       }
-        print(aliveCount);
+    }   
+
+       
         if (element.isAlive){
+          print(aliveCount);
           if (aliveCount > 3 || aliveCount < 2){
             element.isSurviving = false;
           }
         }
-      else{
-        if (aliveCount === 3){
+      else if (aliveCount === 3){
           element.isSurviving = true;
-        }
       }
+
     
-      
   }
+}
 }
 
 /**
@@ -169,7 +185,7 @@ function judicator(){
     if (element.isSurviving){
       element.isAlive = true;
     }
-    if (!element.isSurviving){
+    else if (!element.isSurviving){
       element.isAlive = false;
     }
 
