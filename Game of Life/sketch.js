@@ -49,7 +49,7 @@ function setup() {
     cellsList.push([...newCellRow])
   }
   print(cellsList.length);
-
+  print(cellsList);
   strokeWeight(2);
 }
 function draw() {
@@ -95,8 +95,8 @@ function drawCells(){
  *  
  */
 function lookForCell(placeX, placeY){
-  for (let y = 0; y < cellsList.length; y++) {
-    for (let x = 0; x < cellsList.length; x++) {
+  for (let y = 0; y < rowLength; y++) {
+    for (let x = 0; x < rowWidth; x++) {
     const element = cellsList[y][x];
     // print(floor(placeX * 5 / boardSize) + 1 === element.cellX && floor(placeY * 5 / boardSize) + 1 === element.cellY);
     if (floor(placeX * rowLength / boardSize) + 1 === element.cellX && floor(placeY * rowLength / boardSize) + 1 === element.cellY){
@@ -136,18 +136,28 @@ function live(){
 
     let aliveCount = 0;
 
-      for (let y = -1; y < 2; y++) {
+      for (let yOffset = -1; yOffset < 2; yOffset++) {
         // print("test2")
-        for (let x = -1; x < 2; x++) {
+        for (let xOffset = -1; xOffset < 2; xOffset++) {
           // print("test");
+           
+          if (x + xOffset > -1 && y + xOffset > -1 && x + xOffset < rowWidth && y + yOffset < rowLength){
+            // && cellsList[y + yOffset][x + xOffset]!== undefined
+            print(y+ xOffset);
+            print(x + xOffset);
+            let testy = (y+ xOffset);
+            let testx = (x+ xOffset);
 
-          if (lookForCell(element.cellX + (x * boardSize/rowLength), element.cellX + (y * boardSize/rowLength)) !== undefined){
+            print(cellsList[0][0]);
+            print(cellsList[y+ xOffset][x+ xOffset]);
+
+            print(cellsList[testy][testx]);
             print("found a cell")
             // print(lookForCell(element.cellX + (x * boardSize/rowLength), element.cellY + (y * boardSize/rowLength)));
-            if (lookForCell(element.cellX + (x * boardSize/rowLength), element.cellY + (y * boardSize/rowLength)).isAlive&& !(x === 0 && y === 0)){
+            if (lookForCell(cellsList[y + yOffset][x + xOffset].cellX, cellsList[y + yOffset][x + xOffset].cellY).isAlive && !(xOffset === 0 && yOffset === 0)){
               print("true was returned");
             }
-          if (lookForCell(element.cellX + (x * boardSize/rowLength), element.cellY + (y * boardSize/rowLength)).isAlive && !(x === 0 && y === 0)){
+          if (lookForCell(cellsList[y + yOffset][x + xOffset].cellX, cellsList[y + yOffset][x + xOffset].cellY.isAlive && !(xOffset === 0 && yOffset === 0))){
             aliveCount++;
           }
         
@@ -179,15 +189,18 @@ function live(){
  */
 
 function judicator(){
-  for (let i = 0; i < cellsList.length; i++) {
-    const element = cellsList[i];
+  for (let y = 0; y < rowLength; y++) {
+    for (let x = 0; x < rowWidth; x++) {
+      
+      const element = cellsList[y][x];
 
-    if (element.isSurviving){
-      element.isAlive = true;
-    }
-    else if (!element.isSurviving){
-      element.isAlive = false;
-    }
+      if (element.isSurviving){
+        element.isAlive = true;
+      }
+      else if (!element.isSurviving){
+        element.isAlive = false;
+      }
 
   }
+}
 }
