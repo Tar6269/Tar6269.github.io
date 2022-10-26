@@ -15,24 +15,26 @@
  */
  let example;
 
- let gameOn = false;
+ let gameOver = false;
  let lastTime = 0;
  let canvas;
- 
+ let points = 0;
  let cell = {
    cellX: 0,
    cellY: 0,
-   isBlack: false
+   isBlack: false,
+   isColour: false
  }
  
  let cellsList = [];
- let rowLength = 11;
- let rowWidth = 11;
+ let rowLength = 10;
+ let rowWidth = 10;
  let boardSize;
  function setup() {
    boardSize = min(windowWidth, windowHeight);
    canvas = createCanvas(boardSize, boardSize);
    canvas.center("horizontal")
+   cellsList = [];
    for (let y = 0; y < rowLength; y++) {
      let newCellRow = []
      for (let x = 0; x < rowWidth; x++) {
@@ -41,7 +43,13 @@
  
        newCell.cellX = x + 1;
        newCell.cellY = y + 1;
- 
+
+       if(random() < .05){
+        newCell.isBlack = true;
+       }
+       if(random() > .9){
+        newCell.isColour = true;
+       }
        newCellRow.push(newCell);
        // print(cellsList[x]);
      }
@@ -59,15 +67,42 @@
  function draw() {
    background(220);
    drawCells();
-  //  if (millis() - lastTime > 2000){
-  //  if (gameOn){
+  if(gameOver){
+    endScreen();
+  }
+  else{
+    refreshTimer();
+    scoreDisplay();
+    checkIfEnded();
+  }
 
-  //  lastTime = millis() + 2000;
-  //  }
-  //  }
-   // square(boardSize/2, boardSize/2, boardSize/5);
+
  }
- 
+ function endScreen(){
+  textAlign(CENTER, CENTER)
+  fill(0)
+  textSize(100)
+  print(text(points, boardSize/2, boardSize/2))
+ }
+
+ function checkIfEnded(){
+  if (millis() > 30000){
+    gameOver = true;
+    
+   }
+ }
+
+ function scoreDisplay(){
+  fill(0)
+  textSize(50)
+  text(points, 0, boardSize/18);
+ }
+ function refreshTimer(){
+  if (millis() - lastTime > 2000){
+    setup()
+   lastTime = millis() + 2000;
+   }
+ }
  /**
   * draws all cells inside of the cellsList variable.
   */
@@ -78,14 +113,17 @@
      for (let x = 0; x < rowWidth; x++) {
      const element = cellsList[y][x];
  
-     // print(element.cellX);
-     // print(element.cellY);
-     if (element.isBlack){
-       fill(0);
+     if (element.isBlack && element.isColour){
+      fill(random() * 255,random() * 255, random() * 255)
+     }
+     else if (element.isBlack){
+      fill(random() * 255);
      }
      else{
        fill(255);
      }
+
+
      square((element.cellX - 1)* boardSize/rowWidth, (element.cellY - 1)* boardSize/rowLength, boardSize/min(rowLength, rowWidth));
    }
  }
@@ -115,12 +153,23 @@
   * Triggered when mouse is Clicked. 
   */
  function mouseClicked(){
-   if(mouseX> 0 && mouseY > 0 && mouseX < boardSize && mouseY < boardSize){
+   if(!(mouseX> 0 && mouseY > 0 && mouseX < boardSize && mouseY < boardSize)){
+   return
+  }
    // print(lookForCell(mouseX, mouseY));
-   lookForCell(mouseX, mouseY).isBlack = !lookForCell(mouseX, mouseY).isBlack;
+   if(lookForCell(mouseX, mouseY).isBlack && lookForCell(mouseX, mouseY).isColour){
+    points += 5;
+   }
+   else if(lookForCell(mouseX, mouseY).isBlack){
+    points += 1;
+   }
+   else{
+    points-= 2;
+   }
+   lookForCell(mouseX, mouseY).isBlack = false;
 
  
- }
+ 
  
  }
  function keyPressed(){
