@@ -99,7 +99,7 @@ function lookForCell(placeX, placeY){
     for (let x = 0; x < rowWidth; x++) {
     const element = cellsList[y][x];
     // print(floor(placeX * 5 / boardSize) + 1 === element.cellX && floor(placeY * 5 / boardSize) + 1 === element.cellY);
-    if (floor(placeX * rowLength / boardSize) + 1 === element.cellX && floor(placeY * rowLength / boardSize) + 1 === element.cellY){
+    if (floor(placeX * rowWidth / boardSize) + 1 === element.cellX && floor(placeY * rowLength / boardSize) + 1 === element.cellY){
       
       return element;
     }
@@ -141,15 +141,22 @@ function live(){
         for (let xOffset = -1; xOffset < 2; xOffset++) {
           // print("test");
            
-          if (x + xOffset > -1 && y + xOffset > -1 && x + xOffset < rowWidth && y + yOffset < rowLength){
+          if (x + xOffset > -1 && y + yOffset > -1 && x + xOffset < rowWidth && y + yOffset < rowLength && !(xOffset === 0 && yOffset === 0)){
             // && cellsList[y + yOffset][x + xOffset]!== undefined
-            print(y+ xOffset);
-            print(x + xOffset);
+
             let testy = (y+ xOffset);
             let testx = (x+ xOffset);
 
+            // print(cellsList);
+
+            print(y+ xOffset);
+
+            print(x + xOffset);
+            print(testy);
+            print(testx);
+            print("test");
             print(cellsList[0][0]);
-            print(cellsList[y+ xOffset][x+ xOffset]);
+            print(cellsList[testy]);
 
             print(cellsList[testy][testx]);
             print("found a cell")
