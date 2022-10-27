@@ -19,6 +19,7 @@
  let lastTime = 0;
  let canvas;
  let points = 0;
+ let maxPoints = 0;
  let cell = {
    cellX: 0,
    cellY: 0,
@@ -50,6 +51,13 @@
        if(random() > .9){
         newCell.isColour = true;
        }
+       if(newCell.isBlack && newCell.isColour){
+        maxPoints += 5;
+       }
+       else if(newCell.isBlack){
+        maxPoints +=1;
+       }
+
        newCellRow.push(newCell);
        // print(cellsList[x]);
      }
@@ -82,7 +90,7 @@
   textAlign(CENTER, CENTER)
   fill(0)
   textSize(100)
-  print(text(points, boardSize/2, boardSize/2))
+  print(text( round(points/maxPoints), boardSize/2, boardSize/2))
  }
 
  function checkIfEnded(){
@@ -95,7 +103,7 @@
  function scoreDisplay(){
   fill(0)
   textSize(50)
-  text(points, 0, boardSize/18);
+  text(round(points/maxPoints), 0, boardSize/15);
  }
  function refreshTimer(){
   if (millis() - lastTime > 2000){
