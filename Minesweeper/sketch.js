@@ -23,7 +23,8 @@
  let cell = {
    cellX: 0,
    cellY: 0,
-   isMine: false
+   isMine: false,
+   sweeped: false
  }
  
  let cellsList = [];
@@ -36,6 +37,7 @@
    canvas.center("horizontal")
   makeGrid()
   massMineMaker();
+  textAlign(CENTER)
  }
 
  function makeGrid(){
@@ -140,6 +142,12 @@ function drawCells(){
      else{
        fill(255);
      }
+     if (element.sweeped){
+    fill(0)
+    text("S", (element.cellX - .5)* boardSize/collumnLength, (element.cellY-1)* boardSize/rowLength);
+    fill(255)
+    }
+    
      square((element.cellX - 1)* boardSize/collumnLength, (element.cellY - 1)* boardSize/rowLength, boardSize/min(rowLength, collumnLength));
    }
  }
@@ -184,6 +192,9 @@ function mouseClicked(){
    }
    lookForCell(mouseX, mouseY).isBlack = false;
 
+   if(!lookForCell(mouseX, mouseY).isMine){
+    lookForCell(mouseX, mouseY).sweeped = true;
+   }
  
  
  
