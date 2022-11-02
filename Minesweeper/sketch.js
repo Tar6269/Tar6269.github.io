@@ -24,7 +24,8 @@
    cellX: 0,
    cellY: 0,
    isMine: false,
-   sweeped: false
+   sweeped: false,
+   adjMines: 0
  }
  
  let cellsList = [];
@@ -142,16 +143,40 @@ function drawCells(){
      else{
        fill(255);
      }
+     square((element.cellX - 1)* boardSize/collumnLength, (element.cellY - 1)* boardSize/rowLength, boardSize/min(rowLength, collumnLength));
+
      if (element.sweeped){
     fill(0)
-    text("S", (element.cellX - .5)* boardSize/collumnLength, (element.cellY-1)* boardSize/rowLength);
+    text(element.adjMines, (element.cellX - .5)* boardSize/collumnLength, (element.cellY-.5)* boardSize/rowLength);
     fill(255)
     }
     
-     square((element.cellX - 1)* boardSize/collumnLength, (element.cellY - 1)* boardSize/rowLength, boardSize/min(rowLength, collumnLength));
    }
  }
  }
+
+function calcAdjMines(cell){
+  let adjMinesCount = 0;
+  print(boardSize);
+  for (let y = -1; y < 2; y++) {
+    for (let x = -1; x < 2; x++) {
+      if(x !== 0 || y !== 0){
+      
+
+      // print([floor((cell.cellX + x) * boardSize/rowLength) , floor((cell.cellY + y) * boardSize/collumnLength)]);
+      print([cell.cellX + x, cell.cellY + y]);
+
+      if(lookForCell(floor((cell.cellX + x) * boardSize/rowLength), floor((cell.cellY + y) * boardSize/collumnLength)) !== undefined && lookForCell(floor((cell.cellX + x) * boardSize/rowLength), floor((cell.cellY + y) * boardSize/collumnLength)).isMine){
+        
+        adjMinesCount++;
+        print([floor((cell.cellX + x)), floor((cell.cellY + y))] + "is a mine")
+      }
+    }
+    }
+  }
+
+  cell.adjMines = adjMinesCount;
+}
  /**
   * returns the object related to the coordinates placeX and placeY
   * 
@@ -164,7 +189,7 @@ function lookForCell(placeX, placeY){
      for (let x = 0; x < collumnLength; x++) {
      const element = cellsList[y][x];
      // print(floor(placeX * 5 / boardSize) + 1 === element.cellX && floor(placeY * 5 / boardSize) + 1 === element.cellY);
-     if (floor(placeX * rowLength / boardSize) + 1 === element.cellX && floor(placeY * rowLength / boardSize) + 1 === element.cellY){
+     if (floor(placeX * rowLength / boardSize) + 1 === element.cellX && floor(placeY * collumnLength / boardSize) + 1 === element.cellY){
        
        return element;
      }
@@ -180,19 +205,12 @@ function mouseClicked(){
    if(!(mouseX> 0 && mouseY > 0 && mouseX < boardSize && mouseY < boardSize)){
    return
   }
-   // print(lookForCell(mouseX, mouseY));
-   if(lookForCell(mouseX, mouseY).isBlack && lookForCell(mouseX, mouseY).isColour){
-    points += 5;
-   }
-   else if(lookForCell(mouseX, mouseY).isBlack){
-    points += 1;
-   }
-   else{
-    points-= 2;
-   }
+   print([lookForCell(mouseX, mouseY).cellX, lookForCell(mouseX, mouseY).cellY]);
+
    lookForCell(mouseX, mouseY).isBlack = false;
 
    if(!lookForCell(mouseX, mouseY).isMine){
+    calcAdjMines(lookForCell(mouseX, mouseY));
     lookForCell(mouseX, mouseY).sweeped = true;
    }
  
