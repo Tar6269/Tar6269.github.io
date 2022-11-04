@@ -14,7 +14,7 @@
  * @return {number} The result of adding num1 and num2.
  */
  let example;
-
+let hasWon = false
  let gameOver = false;
  let lastTime = 0;
  let canvas;
@@ -75,6 +75,9 @@
   if(gameOver){
     endScreen();
   }
+  else if(hasWon){
+    winScreen();
+  }
   // else{
 
   // }
@@ -125,6 +128,12 @@ function endScreen(){
  }
 
 
+function winScreen(){
+
+  fill(0)
+  textSize(50)
+  print(text( "you won", boardSize/2, boardSize/2))
+ }
 
  /**
   * draws all cells inside of the cellsList variable.
@@ -234,8 +243,20 @@ function mouseClicked(){
    else{
     gameOver = true;
    }
- 
+   if(winCheck()){
+    hasWon = true;
+   }
  }
 function keyPressed(){
    gameOn = true;
  }
+function winCheck(){
+  for (let y = 0; y < rowLength; y++) {
+    for (let x = 0; x < collumnLength; x++) {
+      if (!cellsList[y][x].sweeped && !cellsList[y][x].isMine){
+        return false;
+      }
+    }
+  }
+  return true;
+}
