@@ -25,7 +25,7 @@
    cellY: 0,
    isMine: false,
    sweeped: false,
-   adjMines: 0
+   adjMines: 0,
  }
  
  let cellsList = [];
@@ -70,14 +70,14 @@
  }
 
  function draw() {
-   background(220);
-   drawCells();
+  background(220);
+  drawCells();
   if(gameOver){
     endScreen();
   }
-  else{
+  // else{
 
-  }
+  // }
 }
 
 function mineMaker(){
@@ -118,10 +118,10 @@ function tileNumberer(cell){
 
 
 function endScreen(){
-  textAlign(CENTER, CENTER)
+
   fill(0)
-  textSize(100)
-  print(text( round(points/maxPoints), boardSize/2, boardSize/2))
+  textSize(50)
+  print(text( "you lost", boardSize/2, boardSize/2))
  }
 
 
@@ -131,23 +131,26 @@ function endScreen(){
   */
 
 function drawCells(){
-   
+   textSize(boardSize/20)
    for (let y = 0; y < rowLength; y++) {
      for (let x = 0; x < collumnLength; x++) {
      const element = cellsList[y][x];
  
-     if (element.isMine){
-      fill(255, 0, 0)
+     if (gameOver && element.isMine){
+      fill(255, 0, 0);
      }
 
+     else if(element.sweeped){
+       fill(0, 255, 0);
+     }
      else{
-       fill(255);
+      fill(255);
      }
      square((element.cellX - 1)* boardSize/collumnLength, (element.cellY - 1)* boardSize/rowLength, boardSize/min(rowLength, collumnLength));
 
      if (element.sweeped){
     fill(0)
-    text(element.adjMines, (element.cellX - .5)* boardSize/collumnLength, (element.cellY-.5)* boardSize/rowLength);
+    text(element.adjMines, (element.cellX - .5)* boardSize/collumnLength, (element.cellY-.35)* boardSize/rowLength);
     fill(255)
     }
     
@@ -157,25 +160,39 @@ function drawCells(){
 
 function calcAdjMines(cell){
   let adjMinesCount = 0;
-  print(boardSize);
+  // print(boardSize);
   for (let y = -1; y < 2; y++) {
     for (let x = -1; x < 2; x++) {
       if(x !== 0 || y !== 0){
       
 
       // print([floor((cell.cellX + x) * boardSize/rowLength) , floor((cell.cellY + y) * boardSize/collumnLength)]);
-      print([cell.cellX + x, cell.cellY + y]);
+      // print([cell.cellX + x, cell.cellY + y]);
 
-      if(lookForCell(floor((cell.cellX + x) * boardSize/rowLength), floor((cell.cellY + y) * boardSize/collumnLength)) !== undefined && lookForCell(floor((cell.cellX + x) * boardSize/rowLength), floor((cell.cellY + y) * boardSize/collumnLength)).isMine){
+      if(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x- 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).isMine){
         
         adjMinesCount++;
-        print([floor((cell.cellX + x)), floor((cell.cellY + y))] + "is a mine")
+        print([floor((cell.cellX + x)), floor((cell.cellY + y))] + " is a mine")
       }
     }
     }
   }
 
   cell.adjMines = adjMinesCount;
+  cell.sweeped = true;
+
+  if (adjMinesCount === 0){
+    for (let y = -1; y < 2; y++) {
+      for (let x = -1; x < 2; x++) {
+        print(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength));
+        print(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).sweeped !== true)
+        if((x !== 0 || y !== 0) && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).sweeped !== true){
+        calcAdjMines(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength));
+        }
+      }
+    }
+  }
+
 }
  /**
   * returns the object related to the coordinates placeX and placeY
@@ -214,7 +231,9 @@ function mouseClicked(){
     lookForCell(mouseX, mouseY).sweeped = true;
    }
  
- 
+   else{
+    gameOver = true;
+   }
  
  }
 function keyPressed(){
