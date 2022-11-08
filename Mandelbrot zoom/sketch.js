@@ -27,6 +27,13 @@ function drawBrot(){
     }
   }
 }
-function mandelBrotter(x, y){
-  
+function XYtoComplexCoords(){
+
 }
+function mandelBrotter(x, y){
+  let mandelBrotEQ = (i*y)^2 + x;
+  for (let i = 0; i < iterationLength - 1; i++) {
+    mandelBrotEQ = mandelBrotEQ^2 + x;
+  }
+}
+Complex

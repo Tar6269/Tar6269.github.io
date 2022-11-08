@@ -14,6 +14,7 @@
  * @return {number} The result of adding num1 and num2.
  */
  let example;
+ let lastTrigger = 0;
 let hasWon = false
  let gameOver = false;
  let lastTime = 0;
@@ -77,6 +78,10 @@ let hasWon = false
   }
   else if(hasWon){
     winScreen();
+  }
+  if(millis() - lastTrigger > 2000 && !gameOver && !hasWon){
+    AutoMineSweep();
+    lastTrigger = millis();
   }
   // else{
 
@@ -228,25 +233,28 @@ function lookForCell(placeX, placeY){
   * Triggered when mouse is Clicked. 
   */
 function mouseClicked(){
-   if(!(mouseX> 0 && mouseY > 0 && mouseX < boardSize && mouseY < boardSize)){
-   return
-  }
-   print([lookForCell(mouseX, mouseY).cellX, lookForCell(mouseX, mouseY).cellY]);
-
-   lookForCell(mouseX, mouseY).isBlack = false;
-
-   if(!lookForCell(mouseX, mouseY).isMine){
-    calcAdjMines(lookForCell(mouseX, mouseY));
-    lookForCell(mouseX, mouseY).sweeped = true;
-   }
- 
-   else{
-    gameOver = true;
-   }
-   if(winCheck()){
-    hasWon = true;
-   }
+  sweepMine(mouseX, mouseY);
  }
+function sweepMine(x, y){
+  if(!(x> 0 && y > 0 && x < boardSize && y < boardSize)){
+    return
+   }
+    print([lookForCell(x, y).cellX, lookForCell(x, y).cellY]);
+ 
+    lookForCell(x, y).isBlack = false;
+ 
+    if(!lookForCell(x, y).isMine){
+     calcAdjMines(lookForCell(x, y));
+     lookForCell(x, y).sweeped = true;
+    }
+  
+    else{
+     gameOver = true;
+    }
+    if(winCheck()){
+     hasWon = true;
+    }
+}
 function keyPressed(){
    gameOn = true;
  }
@@ -259,4 +267,49 @@ function winCheck(){
     }
   }
   return true;
+}
+
+function AutoMineSweep(){
+
+  let biggestAdjSweeped = 0;
+  let chosenOne = undefined;
+
+  for (let y = 0; y < rowLength; y++) {
+    for (let x = 0; x < collumnLength; x++) {
+      const element = cellsList[y][x];
+      if(!element.sweeped){
+        let adjSweepedCount = 0;
+
+          for (let y = -1; y < 2; y++) {
+            for (let x = -1; x < 2; x++) {
+              if(x !== 0 || y !== 0){
+              
+
+              // print([floor((cell.cellX + x) * boardSize/rowLength) , floor((cell.cellY + y) * boardSize/collumnLength)]);
+              // print([cell.cellX + x, cell.cellY + y]);
+
+              if(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x- 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).sweeped){
+                
+                adjSweepedCount++;
+                print([floor((cell.cellX + x)), floor((cell.cellY + y))] + " is sweeped")
+              }
+            }
+            
+            }
+          }
+
+        if(element.adjSweepedCount > biggestAdjSweeped){
+          biggestAdjMines = element.adjMines;
+          chosenOne = element;
+        }
+      }
+    }
+  }
+  if(chosenOne === undefined){
+    return;
+  }
+
+  sweepMine(chosenOne.cellX*boardSize/rowLength, chosenOne.cellY*boardSize/collumnLength);
+
+
 }
