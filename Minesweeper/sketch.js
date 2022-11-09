@@ -21,6 +21,7 @@ let hasWon = false
  let canvas;
  let points = 0;
  let maxPoints = 0;
+ let firstMove = true;
  let cell = {
    cellX: 0,
    cellY: 0,
@@ -149,7 +150,7 @@ function drawCells(){
    for (let y = 0; y < rowLength; y++) {
      for (let x = 0; x < collumnLength; x++) {
      const element = cellsList[y][x];
- 
+
      if (gameOver && element.isMine){
       fill(255, 0, 0);
      }
@@ -234,6 +235,9 @@ function lookForCell(placeX, placeY){
   */
 function mouseClicked(){
   sweepMine(mouseX, mouseY);
+  if(firstMove){
+    firstMove = false;
+  }
  }
 function sweepMine(x, y){
   if(!(x> 0 && y > 0 && x < boardSize && y < boardSize)){
@@ -247,7 +251,11 @@ function sweepMine(x, y){
      calcAdjMines(lookForCell(x, y));
      lookForCell(x, y).sweeped = true;
     }
-  
+    else if(firstMove){
+      lookForCell(x, y).isMine = false;
+      mineMaker();
+      calcAdjMines(lookForCell(x, y));
+    }
     else{
      gameOver = true;
     }
@@ -255,9 +263,7 @@ function sweepMine(x, y){
      hasWon = true;
     }
 }
-function keyPressed(){
-   gameOn = true;
- }
+
 function winCheck(){
   for (let y = 0; y < rowLength; y++) {
     for (let x = 0; x < collumnLength; x++) {
@@ -299,7 +305,7 @@ function AutoMineSweep(){
           }
 
         if(element.adjSweepedCount > biggestAdjSweeped){
-          biggestAdjMines = element.adjMines;
+          biggestAdjSweeped = element.adjMines;
           chosenOne = element;
         }
       }
