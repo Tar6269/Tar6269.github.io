@@ -26,8 +26,10 @@ let hasWon = false
    cellX: 0,
    cellY: 0,
    isMine: false,
-   sweeped: false,
+   isSweeped: false,
+   isFlagged: false,
    adjMines: 0,
+
  }
  
  let cellsList = [];
@@ -35,6 +37,10 @@ let hasWon = false
  let collumnLength = 10;
  let boardSize;
  function setup() {
+    for (let element of document.getElementsByClassName("p5Canvas")) {
+      element.addEventListener("contextmenu", (e) => e.preventDefault());
+    }
+
    boardSize = min(windowWidth, windowHeight);
    canvas = createCanvas(boardSize, boardSize);
    canvas.center("horizontal")
@@ -87,6 +93,7 @@ let hasWon = false
   // else{
 
   // }
+
 }
 
 function mineMaker(){
@@ -150,12 +157,12 @@ function drawCells(){
    for (let y = 0; y < rowLength; y++) {
      for (let x = 0; x < collumnLength; x++) {
      const element = cellsList[y][x];
-
-     if (gameOver && element.isMine){
+    //  gameOver && 
+     if (element.isMine){
       fill(255, 0, 0);
      }
 
-     else if(element.sweeped){
+     else if(element.isSweeped){
        fill(0, 255, 0);
      }
      else{
@@ -163,7 +170,7 @@ function drawCells(){
      }
      square((element.cellX - 1)* boardSize/collumnLength, (element.cellY - 1)* boardSize/rowLength, boardSize/min(rowLength, collumnLength));
 
-     if (element.sweeped){
+     if (element.isSweeped){
     fill(0)
     text(element.adjMines, (element.cellX - .5)* boardSize/collumnLength, (element.cellY-.35)* boardSize/rowLength);
     fill(255)
@@ -194,14 +201,14 @@ function calcAdjMines(cell){
   }
 
   cell.adjMines = adjMinesCount;
-  cell.sweeped = true;
+  cell.isSweeped = true;
 
   if (adjMinesCount === 0){
     for (let y = -1; y < 2; y++) {
       for (let x = -1; x < 2; x++) {
         print(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength));
-        print(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).sweeped !== true)
-        if((x !== 0 || y !== 0) && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).sweeped !== true){
+        print(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).isSweeped !== true)
+        if((x !== 0 || y !== 0) && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).isSweeped !== true){
         calcAdjMines(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength));
         }
       }
@@ -210,7 +217,7 @@ function calcAdjMines(cell){
 
 }
  /**
-  * returns the object related to the coordinates placeX and placeY
+  * returns the cell object related to the coordinates placeX and placeY
   * 
   * @param {number} placeX The x coordinate searched
   * @param {number} placeY The y coordinate searched
@@ -233,41 +240,71 @@ function lookForCell(placeX, placeY){
  /**
   * Triggered when mouse is Clicked. 
   */
-function mouseClicked(){
-  sweepMine(mouseX, mouseY);
-  if(firstMove){
-    firstMove = false;
+
+
+function mousePressed(){
+print(mouseButton);
+  if (mouseButton === LEFT) {
+    sweepMine(mouseX, mouseY);
+    if(firstMove){
+      firstMove = false;
   }
+  if (mouseButton === RIGHT) {
+    print('test')
+    flagMine(mouseX, mouseY);
+  }
+  if (mouseButton === CENTER) {
+ 
+  }
+
+  }
+
  }
+
 function sweepMine(x, y){
-  if(!(x> 0 && y > 0 && x < boardSize && y < boardSize)){
+  if(!(x> 0 && y > 0 && x < boardSize && y < boardSize && !(gameOver || hasWon))){
     return
    }
     print([lookForCell(x, y).cellX, lookForCell(x, y).cellY]);
  
     lookForCell(x, y).isBlack = false;
  
-    if(!lookForCell(x, y).isMine){
+    if(!lookForCell(x, y).isMine && !lookForCell(x, y).isFlagged){
      calcAdjMines(lookForCell(x, y));
-     lookForCell(x, y).sweeped = true;
+     lookForCell(x, y).isSweeped = true;
     }
-    else if(firstMove){
+    else if(firstMove && !lookForCell(x, y).isFlagged){
       lookForCell(x, y).isMine = false;
       mineMaker();
       calcAdjMines(lookForCell(x, y));
     }
-    else{
+    else if (!lookForCell(x, y).isFlagged){
      gameOver = true;
     }
+
     if(winCheck()){
      hasWon = true;
     }
 }
 
+function flagMine(x, y){
+  if(!(x> 0 && y > 0 && x < boardSize && y < boardSize && !(gameOver || hasWon))){
+    return
+   }
+
+   lookForCell(x, y).isFlagged = !lookForCell(x, y).isFlagged;
+   if(lookForCell(x, y).isFlagged){
+    print("mine flagged!")
+    }
+   else{
+    print("mine unflagged!")
+   }
+}
+
 function winCheck(){
   for (let y = 0; y < rowLength; y++) {
     for (let x = 0; x < collumnLength; x++) {
-      if (!cellsList[y][x].sweeped && !cellsList[y][x].isMine){
+      if (!cellsList[y][x].isSweeped && !cellsList[y][x].isMine){
         return false;
       }
     }
@@ -283,16 +320,12 @@ function AutoMineSweep(){
   for (let y = 0; y < rowLength; y++) {
     for (let x = 0; x < collumnLength; x++) {
       const element = cellsList[y][x];
-      if(!element.sweeped){
+      if(!element.isSweeped){
         let adjSweepedCount = 0;
 
           for (let y = -1; y < 2; y++) {
             for (let x = -1; x < 2; x++) {
               if(x !== 0 || y !== 0){
-              
-
-              // print([floor((cell.cellX + x) * boardSize/rowLength) , floor((cell.cellY + y) * boardSize/collumnLength)]);
-              // print([cell.cellX + x, cell.cellY + y]);
 
               if(lookForCell((cell.cellX + x - 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength) !== undefined && lookForCell((cell.cellX + x- 1) * boardSize/rowLength, (cell.cellY + y- 1) * boardSize/collumnLength).sweeped){
                 
